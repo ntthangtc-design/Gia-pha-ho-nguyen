@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gia Phả Gia Tộc Họ Nguyễn - Thôn Hạ Vỹ, Lý Nhân, Hà Nam</title>
+    <!-- Family Tree JS Library -->
+    <script src="https://balkan.app/js/FamilyTree.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase Libraries (CDN Compat Mod Version cho file đơn HTML) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #8B0000;
+            --primary-hover: #A52A2A;
+            --bg-color: #FDFBF7;
+            --card-bg: #FFFFFF;
+            --text-color: #2C3E50;
+            --border-color: #D4AF37;
+            --accent-color: #DAA520;
+            --shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header Styling */
+        header {
+            background: linear-gradient(135deg, #7A0000 0%, #4A0000 100%);
+            color: #FFF8DC;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--accent-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 10;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header-title h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.4rem;
+            letter-spacing: 0.5px;
+            color: #FFD700;
+        }
+
+        .header-title p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .role-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .role-user {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+
+        .role-admin {
+            background-color: #fef08a;
+            color: #854d0e;
+            border: 1px solid #ca8a04;
+        }
+
+        button.btn {
+            background-color: var(--accent-color);
+            color: #4A0000;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        button.btn:hover {
+            background-color: #FFD700;
+            transform: translateY(-1px);
+        }
+
+        button.btn-secondary {
+            background-color: transparent;
+            border: 1px solid #FFD700;
+            color: #FFD700;
+        }
+
+        button.btn-secondary:hover {
+            background-color: rgba(255,215,0,0.1);
+        }
+
+        button.btn-danger {
+            background-color: #dc2626;
+            color: white;
+        }
+        button.btn-danger:hover { background-color: #b91c1c; }
+
+        button.btn-success {
+            background-color: #16a34a;
+            color: white;
+        }
+        button.btn-success:hover { background-color: #15803d; }
+
+        /* Main Canvas Layout */
+        #tree-container {
+            flex: 1;
+            width: 100%;
+            height: calc(100vh - 65px);
+            background-color: #FDFBF7;
+            position: relative;
+        }
+
+        /* Filter & Search Bar floating on Tree */
+        .tree-toolbar {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 5;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+            max-width: calc(100% - 30px);
+        }
+
+        .tree-toolbar input, .tree-toolbar select {
+            padding: 6px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        /* Pending Request Notification Badge */
+        .badge {
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            margin-left: 4px;
+        }
+
+        /* Modal Popup Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(2px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 650px;
+            max-height: 90vh;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow-y: auto;
+            position: relative;
+            animation: slideIn 0.25s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            background: #7A0000;
+            color: #FFF8DC;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .modal-header h3 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.2rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #FFF8DC;
+            font-size: 1.5rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        /* Avatar Container in View Modal */
+        .avatar-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .avatar-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--border-color);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            background: #f8fafc;
+            padding: 10px 14px;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .info-item.full-width {
+            grid-column: span 2;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 0.95rem;
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #334155;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            height: 70px;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            background: #f1f5f9;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            border-top: 1px solid #e2e8f0;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* Requests table */
+        .requests-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .request-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            background: #fafafa;
+        }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+
+        .diff-box {
+            font-size: 0.85rem;
+            background: #fff;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px dashed #cbd5e1;
+            margin-bottom: 8px;
+        }
+
+        /* Footer Info */
+        footer {
+            position: absolute;
+            bottom: 5px;
+            right: 15px;
+            font-size: 0.75rem;
+            color: #64748b;
+            background: rgba(255,255,255,0.8);
+            padding: 4px 8px;
+            border-radius: 4px;
+            pointer-events: none;
+        }
+
+        /* Căn chỉnh kích thước & font hiển thị tên thành viên trong cây sơ đồ */
+        [data-n-id] text {
+            font-size: 13px !important;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.9);
+        }
+
+        .bft-john .field_0 {
+            font-weight: bold !important;
+            fill: #1e293b !important;
+        }
+
+        @media screen and (max-width: 768px) {
+            header {
+                padding: 10px 12px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .header-title h1 {
+                font-size: 1.1rem;
+            }
+
+            .header-title p {
+                font-size: 0.75rem;
+            }
+
+            .header-controls {
+                width: 100%;
+                justify-content: flex-start;
+                gap: 6px;
+            }
+
+            button.btn {
+                padding: 6px 10px;
+                font-size: 0.75rem;
+            }
+
+            .tree-toolbar {
+                top: 8px;
+                left: 8px;
+                right: 8px;
+                padding: 8px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+            }
+
+            .tree-toolbar input, .tree-toolbar select {
+                width: 100%;
+            }
+
+            .tree-toolbar label {
+                margin-left: 0 !important;
+            }
+
+            #tree-container {
+                height: calc(100vh - 120px);
+            }
+
+            .modal-content {
+                width: 95%;
+                max-height: 95vh;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .info-item.full-width {
+                grid-column: span 1;
+            }
+
+            .modal-footer {
+                justify-content: space-between;
+            }
+
+            footer {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="header-title">
+            <h1>Gia Phả Gia Tộc Họ Nguyễn</h1>
+            <p>Thôn Hạ Vỹ, Lý Nhân, Hà Nam (Hệ thống từ Thế hệ 1 - 9)</p>
+        </div>
+        <div class="header-controls">
+            <span id="role-display" class="role-badge role-user">Vai trò: Con Cháu</span>
+            <button class="btn btn-secondary" onclick="toggleRole()">
+                🔄 (<span id="switch-role-label">Admin</span>)
+            </button>
+            <button class="btn" onclick="openRequestsModal()" id="btn-requests" style="display:none;">
+                📋 Duyệt <span id="request-count" class="badge">0</span>
+            </button>
+            <button class="btn btn-secondary" onclick="exportData()">💾 Tải Dữ Liệu</button>
+            <button class="btn btn-secondary" onclick="resetData()">🔄 Khôi Phục Dữ Liệu Gốc</button>
+        </div>
+    </header>
+
+    <!-- Main Tree Container -->
+    <div id="tree-container">
+        <div class="tree-toolbar">
+            <label>🔍 <b>Tìm kiếm:</b></label>
+            <input type="text" id="searchInput" placeholder="Nhập tên thành viên..." oninput="searchMember()">
+            <label style="margin-left: 10px;">🚩 <b>Thế hệ:</b></label>
+            <select id="genFilter" onchange="filterGeneration()">
+                <option value="ALL">Tất cả thế hệ (1-9)</option>
+                <option value="1">Thế hệ 1</option>
+                <option value="2">Thế hệ 2</option>
+                <option value="3">Thế hệ 3</option>
+                <option value="4">Thế hệ 4</option>
+                <option value="5">Thế hệ 5</option>
+                <option value="6">Thế hệ 6</option>
+                <option value="7">Thế hệ 7</option>
+                <option value="8">Thế hệ 8</option>
+                <option value="9">Thế hệ 9</option>
+            </select>
+            <button class="btn btn-success" id="btn-add-top" onclick="openAddMemberModal()" style="display:none;">
+                ➕ Thêm Thành Viên
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal: View Member Details -->
+    <div class="modal" id="viewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="view-name">Thông tin thành viên</h3>
+                <button class="close-btn" onclick="closeModal('viewModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="avatar-container">
+                    <img id="view-img" src="" class="avatar-img" alt="Hình ảnh">
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Thế hệ</div>
+                        <div class="info-value" id="view-gen"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Quan hệ / Vai trò</div>
+                        <div class="info-value" id="view-role"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Ngày sinh</div>
+                        <div class="info-value" id="view-dob"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Ngày tạ thế (Mất)</div>
+                        <div class="info-value" id="view-dod"></div>
+                    </div>
+                    <div class="info-item full-width">
+                        <div class="info-label">Vợ / Chồng</div>
+                        <div class="info-value" id="view-spouse"></div>
+                    </div>
+                    <div class="info-item full-width">
+                        <div class="info-label">Nơi hạ táng / An táng</div>
+                        <div class="info-value" id="view-burial"></div>
+                    </div>
+                    <div class="info-item full-width">
+                        <div class="info-label">Danh sách Con cái</div>
+                        <div class="info-value" id="view-children"></div>
+                    </div>
+                    <div class="info-item full-width">
+                        <div class="info-label">Ghi chú bổ sung</div>
+                        <div class="info-value" id="view-notes"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="openSuggestEditModal()">📝 Đề xuất sửa</button>
+                <button class="btn btn-danger" id="btn-delete-member" onclick="deleteCurrentMember()" style="display:none;">🗑️ Xóa</button>
+                <button class="btn" onclick="closeModal('viewModal')">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Suggest / Edit Member Form -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="edit-modal-title">Đề xuất cập nhật thông tin</h3>
+                <button class="close-btn" onclick="closeModal('editModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="memberForm">
+                    <input type="hidden" id="edit-id">
+                    <div class="form-group">
+                        <label>Họ và Tên (*):</label>
+                        <input type="text" id="edit-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Đường dẫn Hình ảnh (URL/Google Drive):</label>
+                        <input type="text" id="edit-img" placeholder="https://lh3.googleusercontent.com/d/FILE_ID">
+                    </div>
+                    <div class="info-grid">
+                        <div class="form-group">
+                            <label>Thế hệ (1-9):</label>
+                            <input type="number" id="edit-gen" min="1" max="9" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Giới tính:</label>
+                            <select id="edit-gender">
+                                <option value="male">Nam (Cụ Ông / Bác / Anh)</option>
+                                <option value="female">Nữ (Cụ Bà / Cô / Chị)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="info-grid">
+                        <div class="form-group">
+                            <label>Ngày sinh:</label>
+                            <input type="text" id="edit-dob" placeholder="VD: 15/04/1950">
+                        </div>
+                        <div class="form-group">
+                            <label>Ngày tạ thế (Mất):</label>
+                            <input type="text" id="edit-dod" placeholder="VD: 14/5/1989 (AL)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Vợ / Chồng (Họ tên):</label>
+                        <input type="text" id="edit-spouse">
+                    </div>
+                    <div class="form-group">
+                        <label>Nơi hạ táng / An táng:</label>
+                        <input type="text" id="edit-burial">
+                    </div>
+                    <div class="form-group">
+                        <label>Ghi chú bổ sung:</label>
+                        <textarea id="edit-notes"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('editModal')">Hủy</button>
+                <button class="btn btn-success" onclick="submitMemberForm()">💾 Gửi / Lưu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add New Member -->
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Thêm Thành Viên Mới</h3>
+                <button class="close-btn" onclick="closeModal('addModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addForm">
+                    <div class="form-group">
+                        <label>Chọn Cha / Mẹ (Trực hệ):</label>
+                        <select id="add-parent-id"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Họ và Tên (*):</label>
+                        <input type="text" id="add-name" required placeholder="VD: Nguyễn Văn A">
+                    </div>
+                    <div class="form-group">
+                        <label>Đường dẫn Hình ảnh (URL/Google Drive):</label>
+                        <input type="text" id="add-img">
+                    </div>
+                    <div class="info-grid">
+                        <div class="form-group">
+                            <label>Thế hệ:</label>
+                            <input type="number" id="add-gen" min="1" max="9" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Giới tính:</label>
+                            <select id="add-gender">
+                                <option value="male">Nam</option>
+                                <option value="female">Nữ</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="info-grid">
+                        <div class="form-group">
+                            <label>Ngày sinh:</label>
+                            <input type="text" id="add-dob" placeholder="Chưa rõ">
+                        </div>
+                        <div class="form-group">
+                            <label>Ngày tạ thế (nếu có):</label>
+                            <input type="text" id="add-dod" placeholder="Còn sống / Ngày mất">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Vợ / Chồng:</label>
+                        <input type="text" id="add-spouse">
+                    </div>
+                    <div class="form-group">
+                        <label>Nơi hạ táng:</label>
+                        <input type="text" id="add-burial">
+                    </div>
+                    <div class="form-group">
+                        <label>Ghi chú:</label>
+                        <textarea id="add-notes"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addModal')">Hủy</button>
+                <button class="btn btn-success" onclick="saveNewMember()">➕ Thêm Vào Gia Phả</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Admin Pending Requests Approval -->
+    <div class="modal" id="requestsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Đề Xuất Chờ Duyệt (Admin)</h3>
+                <button class="close-btn" onclick="closeModal('requestsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="requests-container" class="requests-list">
+                    <p style="text-align: center; color: #64748b;">Hiện không có đề xuất nào đang chờ duyệt.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('requestsModal')">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>Hệ Thống Quản Lý Cây Gia Phả Họ Nguyễn v3.0</footer>
+
+    <script>
+        // 1. Cấu hình Firebase chính xác từ hình ảnh đính kèm
+        const firebaseConfig = {
+            apiKey: "AIzaSyCHzle1_46bftXPQFb8z9qK8JvHHV_R7Y4",
+            authDomain: "giaphahonguyen-9fa8b.firebaseapp.com",
+            databaseURL: "https://giaphahonguyen-9fa8b-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "giaphahonguyen-9fa8b",
+            storageBucket: "giaphahonguyen-9fa8b.firebasestorage.app",
+            messagingSenderId: "499472944807",
+            appId: "1:499472944807:web:f87a8cb55a8631f7f69582",
+            measurementId: "G-HDKQRSDLCF"
+        };
+
+        // 2. Khởi tạo Firebase App & Realtime Database
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const DEFAULT_AVATAR = "https://cdn.balkan.app/shared/default-user.png";
+
+        function parseImageUrl(url) {
+            if (!url) return DEFAULT_AVATAR;
+            if (url.includes('drive.google.com')) {
+                const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                if (match && match[1]) {
+                    return `https://lh3.googleusercontent.com/d/${match[1]}`;
+                }
+            }
+            return url;
+        }
+
+        const INITIAL_DATA = [
+            { id: "1", gen: 1, name: "Cụ Ông & Cụ Bà Nguyễn Văn Hương", gender: "male", dod: "15/8 (AL)", burial: "Ninh Bình", spouse: "Cụ Bà Nguyễn Văn Hương", notes: "Thủy tổ - Thế hệ 1", img: DEFAULT_AVATAR },
+            { id: "2", fid: "1", gen: 2, name: "Cụ Nguyễn Văn Cát", gender: "male", dod: "6/4 (AL)", burial: "Ninh Bình", spouse: "Cụ Phạm Thị Hinh (Mất 25/3 AL - An táng Ninh Bình)", notes: "Thế hệ 2", img: DEFAULT_AVATAR },
+            { id: "3", fid: "2", gen: 3, name: "Cụ Nguyễn Văn Chu", gender: "male", dod: "29/12 (AL)", burial: "Ninh Bình", spouse: "Cụ Phạm Thị Trì (Từ Kiệm), Cụ Nguyễn Thị Vực, Cụ Nguyễn Thị Du, Cụ Nguyễn Thị Đao", notes: "Thế hệ 3", img: DEFAULT_AVATAR },
+            { id: "4.1", fid: "3", gen: 4, name: "Cụ Nguyễn Hữu Kừu", gender: "male", dod: "14/2/1944", burial: "Ninh Bình", spouse: "4.1.1 Cụ Nguyễn Thị Ngụ (Mất 13/6 AL), 4.1.2 Cụ Nguyễn Thị Thị (Cụ Chi - Mất 1961)", notes: "", img: DEFAULT_AVATAR },
+            { id: "4.2", fid: "3", gen: 4, name: "Cụ Nguyễn Hữu Cầu", gender: "male", dod: "20/5 (AL)", burial: "Ninh Bình", spouse: "Cụ Nguyễn Thị Thường, Cụ Nguyễn Thị Thảo", notes: "", img: DEFAULT_AVATAR },
+            { id: "4.3", fid: "3", gen: 4, name: "Cụ Nguyễn Thị Thíu", gender: "female", dod: "27/7 (AL)", burial: "Ninh Bình", spouse: "Cụ Nguyễn Văn Lưỡng", notes: "", img: DEFAULT_AVATAR },
+            { id: "4.4", fid: "3", gen: 4, name: "Cụ Nguyễn Thiện Thuật", gender: "male", dod: "28/6 (AL)", burial: "Ninh Bình", spouse: "Cụ Nguyễn Thị Xảo (Mất 22/12 AL)", notes: "", img: DEFAULT_AVATAR },
+            { id: "4.5", fid: "3", gen: 4, name: "Cụ Nguyễn Thị Thịu", gender: "female", dod: "22/4 (AL)", burial: "", spouse: "Cụ Bùi Văn O", notes: "", img: DEFAULT_AVATAR },
+            { id: "4.6", fid: "3", gen: 4, name: "Cụ Nguyễn Văn Quán", gender: "male", dod: "15/01 (AL)", burial: "", spouse: "Cụ Nguyễn Thị Dịp, Cụ Nguyễn Thị Sen", notes: "", img: DEFAULT_AVATAR },
+            { id: "4.7", fid: "3", gen: 4, name: "Cụ Nguyễn Thị Nguyên", gender: "female", dod: "Chưa rõ", burial: "", spouse: "Cụ Nguyễn Văn Viễn", notes: "", img: DEFAULT_AVATAR },
+            { id: "4.8", fid: "3", gen: 4, name: "Cụ Nguyễn Văn Tường", gender: "male", dod: "4/4 (AL)", burial: "Ninh Bình", spouse: "Cụ Nguyễn Thị Phẩm (Mất 23/9 AL)", notes: "", img: DEFAULT_AVATAR },
+            { id: "4.9", fid: "3", gen: 4, name: "Cụ Nguyễn Thị Huấn", gender: "female", dod: "3/8 (AL)", burial: "Ninh Bình", spouse: "Cụ Trần Văn Thước", notes: "", img: DEFAULT_AVATAR },
+            { id: "4.10", fid: "3", gen: 4, name: "Cụ Nguyễn Thị Hỗ", gender: "female", dod: "12/8/1953", burial: "Ninh Bình", spouse: "Cụ Nguyễn Văn Nhân", notes: "", img: DEFAULT_AVATAR },
+            { id: "4.11", fid: "3", gen: 4, name: "Cụ Nguyễn Văn Kế", gender: "male", dod: "10/9 (AL)", burial: "Vĩnh Phúc", spouse: "Cụ Nguyễn Thị Bi (Mất 02/5/1982)", notes: "", img: DEFAULT_AVATAR },
+            { id: "4.12", fid: "3", gen: 4, name: "Cụ Nguyễn Thị Út", gender: "female", dod: "05/8 (AL)", burial: "Ninh Bình", spouse: "", notes: "Bà Cô tổ", img: DEFAULT_AVATAR },
+            { id: "5.1", fid: "4.1", gen: 5, name: "Ông Nguyễn Văn Lân", gender: "male", dod: "1985", burial: "Ninh Bình", spouse: "Cụ Đào Thị Hệt, Cụ Nguyễn Thị Nụ, Cụ Nguyễn Thị Dấu", notes: "CON CỤ KỪU", img: DEFAULT_AVATAR },
+            { id: "5.4", fid: "4.1", gen: 5, name: "Ông Nguyễn Văn Ngọc", gender: "male", dod: "18/3/2007", burial: "Lào Cai", spouse: "Cụ Phạm Thị Chừ (Mất 29/8/2013)", notes: "CON CỤ KỪU", img: DEFAULT_AVATAR },
+            { id: "5.5", fid: "4.1", gen: 5, name: "Ông Nguyễn Văn Lộc", gender: "male", dod: "22/11/2020", burial: "Ninh Bình", spouse: "Nguyễn Thị Lịch (Mất 21/6/2022)", notes: "CON CỤ KỪU", img: DEFAULT_AVATAR },
+            { id: "5.6", fid: "4.1", gen: 5, name: "Ông Nguyễn Hữu Hùng", gender: "male", dod: "11/4 (AL)", burial: "Ninh Bình", spouse: "Cụ Đinh Thị Chuyên (Mất 13/4/2026)", notes: "CON CỤ KỪU", img: DEFAULT_AVATAR },
+            { id: "5.7", fid: "4.1", gen: 5, name: "Bà Nguyễn Thị Hia", gender: "female", dod: "Chưa rõ", burial: "Cửa Trường cấp 2 Nhân Chính", spouse: "", notes: "Bà Cô tổ - CON CỤ KỪU", img: DEFAULT_AVATAR },
+            { id: "6.1", fid: "5.1", gen: 6, name: "Bác Nguyễn Xuân Đào", gender: "male", dod: "13/1(AL), 1997", burial: "Ninh Bình", spouse: "", notes: "CON ÔNG LÂN", img: DEFAULT_AVATAR },
+            { id: "6.2", fid: "5.1", gen: 6, name: "Bác Nguyễn Thanh Hải", gender: "male", dod: "14/5/1989 (AL)", burial: "Ninh Bình", spouse: "Bác Nguyễn Thị Nhung, Bác Nguyễn Thị Bảy", notes: "CON ÔNG LÂN", img: DEFAULT_AVATAR },
+            { id: "6.3", fid: "5.1", gen: 6, name: "Bác Nguyễn Văn Sự", gender: "male", dod: "2001", burial: "Ninh Bình", spouse: "", notes: "CON ÔNG LÂN", img: DEFAULT_AVATAR },
+            { id: "6.4", fid: "5.1", gen: 6, name: "Bác Nguyễn Văn Chính", gender: "male", dod: "Chưa rõ", burial: "Ninh Bình", spouse: "Bác Vũ Thị Chè", notes: "CON ÔNG LÂN", img: DEFAULT_AVATAR },
+            { id: "6.6", fid: "5.6", gen: 6, name: "Bác Nguyễn Hồng Bàng", gender: "male", dod: "01/02/2019", burial: "Ninh Bình", spouse: "", notes: "CON ÔNG HÙNG", img: DEFAULT_AVATAR },
+            { id: "7.1", fid: "6.2", gen: 7, name: "Anh Nguyễn Thanh Ý", gender: "male", dod: "01/07/1998 (AL)", burial: "Ninh Bình", spouse: "", notes: "CON ÔNG HẢI", img: DEFAULT_AVATAR }
+        ];
+
+        let familyMembers = [];
+        let editRequests = [];
+        let currentRole = 'USER';
+        let currentSelectedId = null;
+        let familyTreeInstance = null;
+
+        window.onload = function() {
+            listenFirebaseData();
+            updateRoleUI();
+        };
+
+        // 3. Đọc dữ liệu Realtime từ Firebase
+        function listenFirebaseData() {
+            // Lắng nghe dữ liệu danh sách thành viên
+            db.ref('members').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    if (Array.isArray(data)) {
+                        familyMembers = data.filter(Boolean);
+                    } else {
+                        familyMembers = Object.values(data);
+                    }
+                } else {
+                    // Nếu trên Cloud chưa có dữ liệu, khởi tạo dữ liệu gốc lên Firebase
+                    const initialObj = {};
+                    INITIAL_DATA.forEach(item => {
+                        initialObj[item.id] = item;
+                    });
+                    db.ref('members').set(initialObj);
+                    familyMembers = INITIAL_DATA;
+                }
+                initFamilyTree();
+            });
+
+            // Lắng nghe danh sách Đề xuất chờ duyệt
+            db.ref('requests').on('value', (snapshot) => {
+                const reqData = snapshot.val();
+                editRequests = reqData ? Object.values(reqData) : [];
+                updateRequestsBadge();
+                renderRequestsList();
+            });
+        }
+
+        function initFamilyTree() {
+            const chartData = familyMembers.map(m => ({
+                id: m.id,
+                mid: m.mid || undefined,
+                fid: m.fid || undefined,
+                name: m.name,
+                gender: m.gender || 'male',
+                title: `Thế hệ ${m.gen}`,
+                img: parseImageUrl(m.img)
+            }));
+
+            const container = document.getElementById('tree-container');
+            container.innerHTML = `<div class="tree-toolbar">
+                <label>🔍 <b>Tìm kiếm:</b></label>
+                <input type="text" id="searchInput" placeholder="Nhập tên..." oninput="searchMember()">
+                <label style="margin-left: 10px;">🚩 <b>Thế hệ:</b></label>
+                <select id="genFilter" onchange="filterGeneration()">
+                    <option value="ALL">Tất cả thế hệ (1-9)</option>
+                    ${[1,2,3,4,5,6,7,8,9].map(g => `<option value="${g}">Thế hệ ${g}</option>`).join('')}
+                </select>
+                <button class="btn btn-success" id="btn-add-top" onclick="openAddMemberModal()" style="display:${currentRole==='ADMIN'?'inline-flex':'none'};">
+                    ➕ Thêm Thành Viên
+                </button>
+            </div><div id="tree" style="width:100%; height:100%;"></div>`;
+
+            familyTreeInstance = new FamilyTree(document.getElementById("tree"), {
+                nodes: chartData,
+                nodeBinding: {
+                    field_0: "name",
+                    field_1: "title",
+                    img_0: "img"
+                },
+                enableSearch: false,
+                template: "john",
+                mode: "light",
+                scaleInitial: FamilyTree.match.boundary,
+                nodeMenu: false,
+                siblingSeparation: 120,
+                levelSeparation: 100,
+                subtreeSeparation: 140,
+                nodeTreeMenu: false
+            });
+
+            familyTreeInstance.on('click', function(sender, args) {
+                openViewModal(args.node.id);
+                return false;
+            });
+        }
+
+        function toggleRole() {
+            currentRole = (currentRole === 'USER') ? 'ADMIN' : 'USER';
+            updateRoleUI();
+        }
+
+        function updateRoleUI() {
+            const roleBadge = document.getElementById('role-display');
+            const roleBtnLabel = document.getElementById('switch-role-label');
+            const reqBtn = document.getElementById('btn-requests');
+            const addBtn = document.getElementById('btn-add-top');
+
+            if (currentRole === 'ADMIN') {
+                roleBadge.className = 'role-badge role-admin';
+                roleBadge.innerText = 'Admin';
+                roleBtnLabel.innerText = 'Con Cháu';
+                reqBtn.style.display = 'inline-flex';
+                if(addBtn) addBtn.style.display = 'inline-flex';
+            } else {
+                roleBadge.className = 'role-badge role-user';
+                roleBadge.innerText = 'Con Cháu';
+                roleBtnLabel.innerText = 'Admin';
+                reqBtn.style.display = 'none';
+                if(addBtn) addBtn.style.display = 'none';
+            }
+            updateRequestsBadge();
+        }
+
+        function openViewModal(memberId) {
+            currentSelectedId = memberId;
+            const m = familyMembers.find(x => x.id === memberId);
+            if (!m) return;
+
+            document.getElementById('view-name').innerText = m.name;
+            document.getElementById('view-img').src = parseImageUrl(m.img);
+            document.getElementById('view-gen').innerText = `Thế hệ thứ ${m.gen}`;
+            document.getElementById('view-role').innerText = m.gender === 'male' ? 'Nam' : 'Nữ';
+            document.getElementById('view-dob').innerText = m.dob || 'Chưa cập nhật';
+            document.getElementById('view-dod').innerText = m.dod || 'Còn sống / Chưa cập nhật';
+            document.getElementById('view-spouse').innerText = m.spouse || 'Chưa cập nhật';
+            document.getElementById('view-burial').innerText = m.burial || 'Chưa cập nhật';
+            document.getElementById('view-notes').innerText = m.notes || 'Không có';
+
+            const children = familyMembers.filter(x => x.fid === m.id || x.mid === m.id);
+            if (children.length > 0) {
+                document.getElementById('view-children').innerHTML = children.map(c => `• <b>${c.name}</b> (Thế hệ ${c.gen})`).join('<br>');
+            } else {
+                document.getElementById('view-children').innerText = 'Chưa ghi nhận con cái';
+            }
+
+            const delBtn = document.getElementById('btn-delete-member');
+            delBtn.style.display = (currentRole === 'ADMIN') ? 'inline-block' : 'none';
+
+            openModal('viewModal');
+        }
+
+        function openSuggestEditModal() {
+            closeModal('viewModal');
+            const m = familyMembers.find(x => x.id === currentSelectedId);
+            if (!m) return;
+
+            document.getElementById('edit-modal-title').innerText = (currentRole === 'ADMIN') ? 'Sửa thông tin (Admin)' : 'Đề xuất sửa thông tin';
+            document.getElementById('edit-id').value = m.id;
+            document.getElementById('edit-name').value = m.name;
+            document.getElementById('edit-img').value = m.img || '';
+            document.getElementById('edit-gen').value = m.gen;
+            document.getElementById('edit-gender').value = m.gender || 'male';
+            document.getElementById('edit-dob').value = m.dob || '';
+            document.getElementById('edit-dod').value = m.dod || '';
+            document.getElementById('edit-spouse').value = m.spouse || '';
+            document.getElementById('edit-burial').value = m.burial || '';
+            document.getElementById('edit-notes').value = m.notes || '';
+
+            openModal('editModal');
+        }
+
+        // 4. Đồng bộ dữ liệu Form chỉnh sửa/Đề xuất lên Firebase
+        function submitMemberForm() {
+            const id = document.getElementById('edit-id').value;
+            const updatedData = {
+                id: id,
+                name: document.getElementById('edit-name').value,
+                img: document.getElementById('edit-img').value,
+                gen: parseInt(document.getElementById('edit-gen').value),
+                gender: document.getElementById('edit-gender').value,
+                dob: document.getElementById('edit-dob').value,
+                dod: document.getElementById('edit-dod').value,
+                spouse: document.getElementById('edit-spouse').value,
+                burial: document.getElementById('edit-burial').value,
+                notes: document.getElementById('edit-notes').value
+            };
+
+            if (currentRole === 'ADMIN') {
+                db.ref('members/' + id).update(updatedData, (err) => {
+                    if (!err) alert('Cập nhật thành công lên Firebase!');
+                });
+            } else {
+                const reqId = 'REQ_' + Date.now();
+                const reqObj = {
+                    reqId: reqId,
+                    targetId: id,
+                    targetName: updatedData.name,
+                    data: updatedData,
+                    timestamp: new Date().toLocaleString('vi-VN')
+                };
+                db.ref('requests/' + reqId).set(reqObj, (err) => {
+                    if (!err) alert('Đã gửi đề xuất! Vui lòng chờ Admin duyệt.');
+                });
+            }
+            closeModal('editModal');
+        }
+
+        function openAddMemberModal() {
+            const parentSelect = document.getElementById('add-parent-id');
+            parentSelect.innerHTML = familyMembers.map(m => `<option value="${m.id}">[Thế hệ ${m.gen}] ${m.name}</option>`).join('');
+            openModal('addModal');
+        }
+
+        // 5. Thêm thành viên mới trực tiếp lên Firebase
+        function saveNewMember() {
+            const parentId = document.getElementById('add-parent-id').value;
+            const parent = familyMembers.find(x => x.id === parentId);
+            const newId = "MEM_" + Date.now();
+            
+            const newMember = {
+                id: newId,
+                fid: parent ? parent.id : null,
+                gen: parseInt(document.getElementById('add-gen').value) || (parent ? parent.gen + 1 : 1),
+                name: document.getElementById('add-name').value,
+                img: document.getElementById('add-img').value,
+                gender: document.getElementById('add-gender').value,
+                dob: document.getElementById('add-dob').value,
+                dod: document.getElementById('add-dod').value,
+                spouse: document.getElementById('add-spouse').value,
+                burial: document.getElementById('add-burial').value,
+                notes: document.getElementById('add-notes').value
+            };
+
+            db.ref('members/' + newId).set(newMember, (err) => {
+                if (!err) {
+                    closeModal('addModal');
+                    alert('Đã thêm thành viên mới lên hệ thống Firebase!');
+                }
+            });
+        }
+
+        // 6. Xóa thành viên trên Firebase
+        function deleteCurrentMember() {
+            if (!confirm('Bạn có chắc chắn muốn xóa thành viên này trên Cloud Firebase?')) return;
+            db.ref('members/' + currentSelectedId).remove((err) => {
+                if (!err) {
+                    closeModal('viewModal');
+                    alert('Đã xóa thành viên.');
+                }
+            });
+        }
+
+        function openRequestsModal() {
+            renderRequestsList();
+            openModal('requestsModal');
+        }
+
+        function updateRequestsBadge() {
+            const badge = document.getElementById('request-count');
+            if (badge) badge.innerText = editRequests.length;
+        }
+
+        function renderRequestsList() {
+            const container = document.getElementById('requests-container');
+            if (editRequests.length === 0) {
+                container.innerHTML = `<p style="text-align: center; color: #64748b;">Hiện không có đề xuất nào đang chờ duyệt.</p>`;
+                return;
+            }
+
+            container.innerHTML = editRequests.map(r => `
+                <div class="request-card">
+                    <div class="request-header">
+                        <span>📌 Đề xuất: ${r.targetName}</span>
+                        <span style="font-size: 0.75rem; color: #64748b;">${r.timestamp}</span>
+                    </div>
+                    <div class="diff-box">
+                        • Ảnh URL: ${r.data.img || 'N/A'}<br>
+                        • Ngày sinh: ${r.data.dob || 'N/A'}<br>
+                        • Ngày mất: ${r.data.dod || 'N/A'}<br>
+                        • Vợ/Chồng: ${r.data.spouse || 'N/A'}<br>
+                        • An táng: ${r.data.burial || 'N/A'}<br>
+                        • Ghi chú: ${r.data.notes || 'N/A'}
+                    </div>
+                    <div style="display:flex; justify-content:flex-end; gap:8px;">
+                        <button class="btn btn-danger" onclick="rejectRequest('${r.reqId}')">Từ Chối</button>
+                        <button class="btn btn-success" onclick="approveRequest('${r.reqId}')">Duyệt</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 7. Admin Duyệt Đề xuất -> Cập nhật trực tiếp trên Firebase
+        function approveRequest(reqId) {
+            const req = editRequests.find(r => r.reqId === reqId);
+            if (!req) return;
+
+            db.ref('members/' + req.targetId).update(req.data, (err) => {
+                if (!err) {
+                    db.ref('requests/' + reqId).remove();
+                    alert('Đã chấp thuận đề xuất và cập nhật lên Gia phả!');
+                }
+            });
+        }
+
+        // 8. Admin Từ chối Đề xuất -> Xóa yêu cầu trên Firebase
+        function rejectRequest(reqId) {
+            db.ref('requests/' + reqId).remove((err) => {
+                if (!err) alert('Đã từ chối đề xuất.');
+            });
+        }
+
+        function searchMember() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            if (familyTreeInstance) {
+                familyTreeInstance.search(q);
+            }
+        }
+
+        function filterGeneration() {
+            initFamilyTree();
+        }
+
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(familyMembers, null, 2));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", "Gia_Pha_Ho_Nguyen_Backup.json");
+            dlAnchorElem.click();
+        }
+
+        // 9. Reset dữ liệu ban đầu trên Cloud Firebase
+        function resetData() {
+            if (confirm('Khôi phục về dữ liệu mặc định ban đầu trên Cloud Firebase?')) {
+                const initialObj = {};
+                INITIAL_DATA.forEach(item => {
+                    initialObj[item.id] = item;
+                });
+                db.ref('members').set(initialObj);
+                db.ref('requests').remove();
+                alert('Đã khôi phục dữ liệu gốc!');
+            }
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+    </script>
+</body>
+</html>
