@@ -8,7 +8,7 @@
     <script src="https://balkan.app/js/FamilyTree.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     
-    <!-- Firebase Libraries (CDN Compat Mod Version cho file đơn HTML) -->
+    <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
@@ -40,7 +40,6 @@
             overflow: hidden;
         }
 
-        /* Header Styling */
         header {
             background: linear-gradient(135deg, #7A0000 0%, #4A0000 100%);
             color: #FFF8DC;
@@ -137,7 +136,6 @@
         }
         button.btn-success:hover { background-color: #15803d; }
 
-        /* Main Canvas Layout */
         #tree-container {
             flex: 1;
             width: 100%;
@@ -146,7 +144,6 @@
             position: relative;
         }
 
-        /* Filter & Search Bar floating on Tree */
         .tree-toolbar {
             position: absolute;
             top: 15px;
@@ -172,7 +169,6 @@
             outline: none;
         }
 
-        /* Pending Request Notification Badge */
         .badge {
             background: #ef4444;
             color: white;
@@ -182,7 +178,6 @@
             margin-left: 4px;
         }
 
-        /* Modal Popup Styles */
         .modal {
             display: none;
             position: fixed;
@@ -246,7 +241,6 @@
             padding: 20px;
         }
 
-        /* Avatar Container in View Modal */
         .avatar-container {
             text-align: center;
             margin-bottom: 15px;
@@ -293,7 +287,6 @@
             font-weight: 500;
         }
 
-        /* Forms */
         .form-group {
             margin-bottom: 12px;
         }
@@ -332,7 +325,6 @@
             flex-wrap: wrap;
         }
 
-        /* Requests table */
         .requests-list {
             display: flex;
             flex-direction: column;
@@ -364,7 +356,6 @@
             margin-bottom: 8px;
         }
 
-        /* Footer Info */
         footer {
             position: absolute;
             bottom: 5px;
@@ -377,7 +368,6 @@
             pointer-events: none;
         }
 
-        /* Căn chỉnh kích thước & font hiển thị tên thành viên trong cây sơ đồ */
         [data-n-id] text {
             font-size: 13px !important;
             text-shadow: 0 1px 2px rgba(255,255,255,0.9);
@@ -462,7 +452,6 @@
 </head>
 <body>
 
-    <!-- Header Navigation -->
     <header>
         <div class="header-title">
             <h1>Gia Phả Gia Tộc Họ Nguyễn</h1>
@@ -476,12 +465,11 @@
             <button class="btn" onclick="openRequestsModal()" id="btn-requests" style="display:none;">
                 📋 Duyệt <span id="request-count" class="badge">0</span>
             </button>
-            <button class="btn btn-secondary" onclick="exportData()">💾 Tải Dữ Liệu</button>
-            <button class="btn btn-secondary" onclick="resetData()">🔄 Khôi Phục Dữ Liệu Gốc</button>
+            <button class="btn btn-secondary" id="btn-export" onclick="exportData()" style="display:none;">💾 Tải Dữ Liệu</button>
+            <button class="btn btn-secondary" id="btn-reset" onclick="resetData()" style="display:none;">🔄 Khôi Phục Dữ Liệu Gốc</button>
         </div>
     </header>
 
-    <!-- Main Tree Container -->
     <div id="tree-container">
         <div class="tree-toolbar">
             <label>🔍 <b>Tìm kiếm:</b></label>
@@ -552,7 +540,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="openSuggestEditModal()">📝 Đề xuất sửa</button>
+                <button class="btn btn-secondary" id="btn-edit-action" onclick="openSuggestEditModal()">📝 Đề xuất sửa</button>
                 <button class="btn btn-danger" id="btn-delete-member" onclick="deleteCurrentMember()" style="display:none;">🗑️ Xóa</button>
                 <button class="btn" onclick="closeModal('viewModal')">Đóng</button>
             </div>
@@ -707,7 +695,6 @@
     <footer>Hệ Thống Quản Lý Cây Gia Phả Họ Nguyễn v3.0</footer>
 
     <script>
-        // 1. Cấu hình Firebase chính xác từ hình ảnh đính kèm
         const firebaseConfig = {
             apiKey: "AIzaSyCHzle1_46bftXPQFb8z9qK8JvHHV_R7Y4",
             authDomain: "giaphahonguyen-9fa8b.firebaseapp.com",
@@ -719,9 +706,11 @@
             measurementId: "G-HDKQRSDLCF"
         };
 
-        // 2. Khởi tạo Firebase App & Realtime Database
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+
+        // Mật khẩu xác thực quyền Admin
+        const ADMIN_PASSWORD = "123456";
 
         const DEFAULT_AVATAR = "https://cdn.balkan.app/shared/default-user.png";
 
@@ -776,9 +765,7 @@
             updateRoleUI();
         };
 
-        // 3. Đọc dữ liệu Realtime từ Firebase
         function listenFirebaseData() {
-            // Lắng nghe dữ liệu danh sách thành viên
             db.ref('members').on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
@@ -788,7 +775,6 @@
                         familyMembers = Object.values(data);
                     }
                 } else {
-                    // Nếu trên Cloud chưa có dữ liệu, khởi tạo dữ liệu gốc lên Firebase
                     const initialObj = {};
                     INITIAL_DATA.forEach(item => {
                         initialObj[item.id] = item;
@@ -799,7 +785,6 @@
                 initFamilyTree();
             });
 
-            // Lắng nghe danh sách Đề xuất chờ duyệt
             db.ref('requests').on('value', (snapshot) => {
                 const reqData = snapshot.val();
                 editRequests = reqData ? Object.values(reqData) : [];
@@ -858,7 +843,20 @@
         }
 
         function toggleRole() {
-            currentRole = (currentRole === 'USER') ? 'ADMIN' : 'USER';
+            if (currentRole === 'USER') {
+                const pwd = prompt("Nhập mật khẩu Admin để truy cập quyền Quản trị:");
+                if (pwd === ADMIN_PASSWORD) {
+                    currentRole = 'ADMIN';
+                    alert("Đã đăng nhập quyền Admin thành công!");
+                } else if (pwd !== null) {
+                    alert("Mật khẩu không đúng!");
+                    return;
+                } else {
+                    return;
+                }
+            } else {
+                currentRole = 'USER';
+            }
             updateRoleUI();
         }
 
@@ -867,6 +865,8 @@
             const roleBtnLabel = document.getElementById('switch-role-label');
             const reqBtn = document.getElementById('btn-requests');
             const addBtn = document.getElementById('btn-add-top');
+            const exportBtn = document.getElementById('btn-export');
+            const resetBtn = document.getElementById('btn-reset');
 
             if (currentRole === 'ADMIN') {
                 roleBadge.className = 'role-badge role-admin';
@@ -874,12 +874,16 @@
                 roleBtnLabel.innerText = 'Con Cháu';
                 reqBtn.style.display = 'inline-flex';
                 if(addBtn) addBtn.style.display = 'inline-flex';
+                if(exportBtn) exportBtn.style.display = 'inline-flex';
+                if(resetBtn) resetBtn.style.display = 'inline-flex';
             } else {
                 roleBadge.className = 'role-badge role-user';
                 roleBadge.innerText = 'Con Cháu';
                 roleBtnLabel.innerText = 'Admin';
                 reqBtn.style.display = 'none';
                 if(addBtn) addBtn.style.display = 'none';
+                if(exportBtn) exportBtn.style.display = 'none';
+                if(resetBtn) resetBtn.style.display = 'none';
             }
             updateRequestsBadge();
         }
@@ -905,6 +909,9 @@
             } else {
                 document.getElementById('view-children').innerText = 'Chưa ghi nhận con cái';
             }
+
+            const editBtn = document.getElementById('btn-edit-action');
+            editBtn.innerText = (currentRole === 'ADMIN') ? '✏️ Chỉnh sửa' : '📝 Đề xuất sửa';
 
             const delBtn = document.getElementById('btn-delete-member');
             delBtn.style.display = (currentRole === 'ADMIN') ? 'inline-block' : 'none';
@@ -932,7 +939,6 @@
             openModal('editModal');
         }
 
-        // 4. Đồng bộ dữ liệu Form chỉnh sửa/Đề xuất lên Firebase
         function submitMemberForm() {
             const id = document.getElementById('edit-id').value;
             const updatedData = {
@@ -974,7 +980,6 @@
             openModal('addModal');
         }
 
-        // 5. Thêm thành viên mới trực tiếp lên Firebase
         function saveNewMember() {
             const parentId = document.getElementById('add-parent-id').value;
             const parent = familyMembers.find(x => x.id === parentId);
@@ -1002,7 +1007,6 @@
             });
         }
 
-        // 6. Xóa thành viên trên Firebase
         function deleteCurrentMember() {
             if (!confirm('Bạn có chắc chắn muốn xóa thành viên này trên Cloud Firebase?')) return;
             db.ref('members/' + currentSelectedId).remove((err) => {
@@ -1052,7 +1056,6 @@
             `).join('');
         }
 
-        // 7. Admin Duyệt Đề xuất -> Cập nhật trực tiếp trên Firebase
         function approveRequest(reqId) {
             const req = editRequests.find(r => r.reqId === reqId);
             if (!req) return;
@@ -1065,7 +1068,6 @@
             });
         }
 
-        // 8. Admin Từ chối Đề xuất -> Xóa yêu cầu trên Firebase
         function rejectRequest(reqId) {
             db.ref('requests/' + reqId).remove((err) => {
                 if (!err) alert('Đã từ chối đề xuất.');
@@ -1091,7 +1093,6 @@
             dlAnchorElem.click();
         }
 
-        // 9. Reset dữ liệu ban đầu trên Cloud Firebase
         function resetData() {
             if (confirm('Khôi phục về dữ liệu mặc định ban đầu trên Cloud Firebase?')) {
                 const initialObj = {};
