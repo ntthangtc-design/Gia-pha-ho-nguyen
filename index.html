@@ -356,6 +356,28 @@
             margin-bottom: 8px;
         }
 
+        /* Style cho phần Hướng dẫn */
+        .guide-section {
+            margin-bottom: 18px;
+            background: #fff8f0;
+            border-left: 4px solid var(--accent-color);
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+        }
+        .guide-section h4 {
+            color: var(--primary-color);
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+        .guide-section ol, .guide-section ul {
+            padding-left: 20px;
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+        .guide-section li {
+            margin-bottom: 4px;
+        }
+
         footer {
             position: absolute;
             bottom: 5px;
@@ -429,6 +451,7 @@
             <p>Thôn Hạ Vỹ, Lý Nhân, Hà Nam (Hệ thống từ Thế hệ 1 - 9)</p>
         </div>
         <div class="header-controls">
+            <button class="btn btn-secondary" onclick="openModal('guideModal')">📖 Hướng Dẫn</button>
             <span id="role-display" class="role-badge role-user">Vai trò: Con Cháu</span>
             <button class="btn btn-secondary" onclick="toggleRole()">
                 🔄 (<span id="switch-role-label">Admin</span>)
@@ -461,6 +484,48 @@
             <button class="btn btn-success" id="btn-add-top" onclick="openAddMemberModal()" style="display:none;">
                 ➕ Thêm Thành Viên
             </button>
+        </div>
+    </div>
+
+    <!-- Modal: Hướng dẫn sử dụng -->
+    <div class="modal" id="guideModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📖 Hướng Dẫn Sử Dụng Gia Phả</h3>
+                <button class="close-btn" onclick="closeModal('guideModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="guide-section">
+                    <h4>🔍 1. Cách tra cứu thông tin thành viên</h4>
+                    <ul>
+                        <li><b>Xem chi tiết:</b> Nhấp chuột (hoặc chạm tay trên điện thoại) trực tiếp vào tên của một thành viên trên sơ đồ để mở bảng chi tiết thông tin (ngày sinh, ngày mất, nơi an táng, danh sách con cái,...).</li>
+                        <li><b>Tìm kiếm nhanh:</b> Sử dụng ô <i>"Tìm kiếm"</i> ở góc trên bên trái để nhập tên thành viên cần tìm.</li>
+                        <li><b>Lọc theo thế hệ:</b> Chọn bớt các thế hệ từ ô danh sách <i>"Thế hệ"</i> để xem riêng từng đời.</li>
+                    </ul>
+                </div>
+
+                <div class="guide-section">
+                    <h4>📝 2. Hướng dẫn dành cho Con Cháu (Đề xuất cập nhật thông tin)</h4>
+                    <ol>
+                        <li>Nhấp vào tên thành viên mà bạn muốn bổ sung thông tin trên sơ đồ.</li>
+                        <li>Trong cửa sổ thông tin hiện ra, bấm vào nút <b>"📝 Đề xuất sửa"</b> ở góc dưới.</li>
+                        <li>Điền các thông tin mới hoặc thông tin chính xác (Ảnh đại diện, Ngày sinh, Ngày mất, Vợ/Chồng, Nơi an táng, Ghi chú).</li>
+                        <li>Bấm <b>"💾 Gửi / Lưu"</b>. Thông tin đề xuất sẽ được gửi đến Ban quản trị (Admin) để xác nhận trước khi cập nhật chính thức lên cây gia phả.</li>
+                    </ol>
+                </div>
+
+                <div class="guide-section">
+                    <h4>👑 3. Hướng dẫn dành cho Quản Trị Viên (Admin)</h4>
+                    <ul>
+                        <li><b>Đăng nhập Admin:</b> Bấm vào nút <b>"🔄 (Admin)"</b> trên cùng và nhập mật khẩu xác thực.</li>
+                        <li><b>Duyệt đề xuất:</b> Bấm vào nút <b>"📋 Duyệt"</b> có hiển thị số lượng đề xuất chờ xử lý để duyệt hoặc từ chối thông tin do con cháu gửi lên.</li>
+                        <li><b>Thêm thành viên mới:</b> Sau khi chuyển sang quyền Admin, bấm nút <b>"➕ Thêm Thành Viên"</b> trên thanh công cụ, chọn Cha/Mẹ trực hệ và điền đầy đủ thông tin để thêm ngay thành viên mới vào cây gia phả.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="closeModal('guideModal')">Tôi Đã Hiểu</button>
+            </div>
         </div>
     </div>
 
@@ -663,7 +728,7 @@
         </div>
     </div>
 
-    <footer>Hệ Thống Quản Lý Cây Gia Phả Họ Nguyễn v3.1</footer>
+    <footer>Hệ Thống Quản Lý Cây Gia Phả Họ Nguyễn v3.2</footer>
 
     <script>
         const firebaseConfig = {
@@ -746,7 +811,8 @@
                 } else {
                     const initialObj = {};
                     INITIAL_DATA.forEach(item => {
-                        initialObj[item.id] = item;
+                        const safeKey = String(item.id).replace('.', '_');
+                        initialObj[safeKey] = item;
                     });
                     db.ref('members').set(initialObj);
                     familyMembers = INITIAL_DATA;
@@ -923,15 +989,17 @@
                 notes: document.getElementById('edit-notes').value
             };
 
+            const safeKey = String(id).replace('.', '_');
+
             if (currentRole === 'ADMIN') {
-                db.ref('members/' + id).update(updatedData, (err) => {
+                db.ref('members/' + safeKey).update(updatedData, (err) => {
                     if (!err) alert('Cập nhật thành công lên Firebase!');
                 });
             } else {
                 const reqId = 'REQ_' + Date.now();
                 const reqObj = {
                     reqId: reqId,
-                    targetId: id,
+                    targetId: safeKey,
                     targetName: updatedData.name,
                     data: updatedData,
                     timestamp: new Date().toLocaleString('vi-VN')
@@ -978,7 +1046,8 @@
 
         function deleteCurrentMember() {
             if (!confirm('Bạn có chắc chắn muốn xóa thành viên này trên Cloud Firebase?')) return;
-            db.ref('members/' + currentSelectedId).remove((err) => {
+            const safeKey = String(currentSelectedId).replace('.', '_');
+            db.ref('members/' + safeKey).remove((err) => {
                 if (!err) {
                     closeModal('viewModal');
                     alert('Đã xóa thành viên.');
@@ -1062,25 +1131,20 @@
             dlAnchorElem.click();
         }
 
-        // Hàm khôi phục dữ liệu tối ưu: Đè trực tiếp Object lên Realtime Database
         function resetData() {
             if (confirm('XÁC NHẬN: Hệ thống sẽ nạp lại toàn bộ dữ liệu mặc định ban đầu lên Firebase?')) {
                 const initialObj = {};
                 INITIAL_DATA.forEach(item => {
-                    // Chuẩn hóa key lưu trữ để tránh xung đột ký tự đặc biệt
                     const safeKey = String(item.id).replace('.', '_');
                     initialObj[safeKey] = item;
                 });
 
-                // Xóa danh sách yêu cầu chờ duyệt
                 db.ref('requests').remove();
-
-                // Ghi đè lại node members
                 db.ref('members').set(initialObj, (err) => {
                     if (!err) {
                         alert('✅ KHÔI PHỤC THÀNH CÔNG!\nCây gia phả đã hiển thị lại các thế hệ mặc định.');
                     } else {
-                        alert('Lỗi khi ghi dữ liệu: ' + err.message + '\nHãy kiểm tra lại cài đặt Rules trên Firebase Console.');
+                        alert('Lỗi khi ghi dữ liệu: ' + err.message);
                     }
                 });
             }
