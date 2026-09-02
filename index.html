@@ -386,13 +386,8 @@
                 gap: 8px;
             }
 
-            .header-title h1 {
-                font-size: 1.1rem;
-            }
-
-            .header-title p {
-                font-size: 0.75rem;
-            }
+            .header-title h1 { font-size: 1.1rem; }
+            .header-title p { font-size: 0.75rem; }
 
             .header-controls {
                 width: 100%;
@@ -415,38 +410,14 @@
                 gap: 6px;
             }
 
-            .tree-toolbar input, .tree-toolbar select {
-                width: 100%;
-            }
-
-            .tree-toolbar label {
-                margin-left: 0 !important;
-            }
-
-            #tree-container {
-                height: calc(100vh - 120px);
-            }
-
-            .modal-content {
-                width: 95%;
-                max-height: 95vh;
-            }
-
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .info-item.full-width {
-                grid-column: span 1;
-            }
-
-            .modal-footer {
-                justify-content: space-between;
-            }
-
-            footer {
-                display: none;
-            }
+            .tree-toolbar input, .tree-toolbar select { width: 100%; }
+            .tree-toolbar label { margin-left: 0 !important; }
+            #tree-container { height: calc(100vh - 120px); }
+            .modal-content { width: 95%; max-height: 95vh; }
+            .info-grid { grid-template-columns: 1fr; }
+            .info-item.full-width { grid-column: span 1; }
+            .modal-footer { justify-content: space-between; }
+            footer { display: none; }
         }
     </style>
 </head>
@@ -692,7 +663,7 @@
         </div>
     </div>
 
-    <footer>Hệ Thống Quản Lý Cây Gia Phả Họ Nguyễn v3.0</footer>
+    <footer>Hệ Thống Quản Lý Cây Gia Phả Họ Nguyễn v3.1</footer>
 
     <script>
         const firebaseConfig = {
@@ -709,9 +680,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Mật khẩu xác thực quyền Admin
         const ADMIN_PASSWORD = "123456";
-
         const DEFAULT_AVATAR = "https://cdn.balkan.app/shared/default-user.png";
 
         function parseImageUrl(url) {
@@ -795,9 +764,9 @@
 
         function initFamilyTree() {
             const chartData = familyMembers.map(m => ({
-                id: m.id,
-                mid: m.mid || undefined,
-                fid: m.fid || undefined,
+                id: String(m.id),
+                mid: m.mid ? String(m.mid) : undefined,
+                fid: m.fid ? String(m.fid) : undefined,
                 name: m.name,
                 gender: m.gender || 'male',
                 title: `Thế hệ ${m.gen}`,
@@ -889,8 +858,8 @@
         }
 
         function openViewModal(memberId) {
-            currentSelectedId = memberId;
-            const m = familyMembers.find(x => x.id === memberId);
+            currentSelectedId = String(memberId);
+            const m = familyMembers.find(x => String(x.id) === currentSelectedId);
             if (!m) return;
 
             document.getElementById('view-name').innerText = m.name;
@@ -903,7 +872,7 @@
             document.getElementById('view-burial').innerText = m.burial || 'Chưa cập nhật';
             document.getElementById('view-notes').innerText = m.notes || 'Không có';
 
-            const children = familyMembers.filter(x => x.fid === m.id || x.mid === m.id);
+            const children = familyMembers.filter(x => String(x.fid) === currentSelectedId || String(x.mid) === currentSelectedId);
             if (children.length > 0) {
                 document.getElementById('view-children').innerHTML = children.map(c => `• <b>${c.name}</b> (Thế hệ ${c.gen})`).join('<br>');
             } else {
@@ -921,7 +890,7 @@
 
         function openSuggestEditModal() {
             closeModal('viewModal');
-            const m = familyMembers.find(x => x.id === currentSelectedId);
+            const m = familyMembers.find(x => String(x.id) === currentSelectedId);
             if (!m) return;
 
             document.getElementById('edit-modal-title').innerText = (currentRole === 'ADMIN') ? 'Sửa thông tin (Admin)' : 'Đề xuất sửa thông tin';
@@ -982,7 +951,7 @@
 
         function saveNewMember() {
             const parentId = document.getElementById('add-parent-id').value;
-            const parent = familyMembers.find(x => x.id === parentId);
+            const parent = familyMembers.find(x => String(x.id) === String(parentId));
             const newId = "MEM_" + Date.now();
             
             const newMember = {
@@ -1093,31 +1062,25 @@
             dlAnchorElem.click();
         }
 
-        // Hàm khôi phục dữ liệu cưỡng chế (Xóa sạch trên Firebase và đẩy lại INITIAL_DATA)
+        // Hàm khôi phục dữ liệu tối ưu: Đè trực tiếp Object lên Realtime Database
         function resetData() {
-            if (confirm('XÁC NHẬN: Hệ thống sẽ XÓA SẠCH dữ liệu lỗi trên Firebase và nạp lại toàn bộ từ Thế hệ 1 đến 7?')) {
+            if (confirm('XÁC NHẬN: Hệ thống sẽ nạp lại toàn bộ dữ liệu mặc định ban đầu lên Firebase?')) {
                 const initialObj = {};
                 INITIAL_DATA.forEach(item => {
-                    initialObj[item.id] = item;
+                    // Chuẩn hóa key lưu trữ để tránh xung đột ký tự đặc biệt
+                    const safeKey = String(item.id).replace('.', '_');
+                    initialObj[safeKey] = item;
                 });
 
-                // 1. Xóa toàn bộ node members và requests
-                db.ref().update({
-                    'members': null,
-                    'requests': null
-                }, (error) => {
-                    if (error) {
-                        alert("Lỗi bảo mật Firebase: " + error.message + "\nVui lòng kiểm tra lại Rules trên Firebase.");
+                // Xóa danh sách yêu cầu chờ duyệt
+                db.ref('requests').remove();
+
+                // Ghi đè lại node members
+                db.ref('members').set(initialObj, (err) => {
+                    if (!err) {
+                        alert('✅ KHÔI PHỤC THÀNH CÔNG!\nCây gia phả đã hiển thị lại các thế hệ mặc định.');
                     } else {
-                        // 2. Ghi đè lại dữ liệu gốc từ INITIAL_DATA
-                        db.ref('members').set(initialObj, (err) => {
-                            if (!err) {
-                                alert('✅ ĐÃ KHÔI PHỤC THÀNH CÔNG!\nToàn bộ dữ liệu thế hệ 1-7 đã được nạp lại lên Firebase.');
-                                location.reload(); // Tải lại trang
-                            } else {
-                                alert('Lỗi khi nạp lại dữ liệu: ' + err.message);
-                            }
-                        });
+                        alert('Lỗi khi ghi dữ liệu: ' + err.message + '\nHãy kiểm tra lại cài đặt Rules trên Firebase Console.');
                     }
                 });
             }
