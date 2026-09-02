@@ -1093,18 +1093,36 @@
             dlAnchorElem.click();
         }
 
-        function resetData() {
-            if (confirm('Khôi phục về dữ liệu mặc định ban đầu trên Cloud Firebase?')) {
-                const initialObj = {};
-                INITIAL_DATA.forEach(item => {
-                    initialObj[item.id] = item;
-                });
-                db.ref('members').set(initialObj);
-                db.ref('requests').remove();
-                alert('Đã khôi phục dữ liệu gốc!');
-            }
-        }
+	// Hàm khôi phục dữ liệu cưỡng chế (Xóa sạch trên Firebase và đẩy lại INITIAL_DATA)
+	function resetData() {
+	    if (confirm('XÁC NHẬN: Hệ thống sẽ XÓA SẠCH dữ liệu lỗi trên Firebase và nạp lại toàn bộ từ Thế hệ 1 đến 7?')) {
+	        const initialObj = {};
+	        INITIAL_DATA.forEach(item => {
+	            initialObj[item.id] = item;
+	        });
 
+	        // 1. Xóa toàn bộ node members và requests
+	        db.ref().update({
+	            'members': null,
+	            'requests': null
+	        }, (error) => {
+	            if (error) {
+	                alert("Lỗi bảo mật Firebase: " + error.message + "\nVui lòng kiểm tra lại Rules trên Firebase.");
+	            } else {
+	                // 2. Ghi đè lại dữ liệu gốc từ INITIAL_DATA
+	                db.ref('members').set(initialObj, (err) => {
+	                    if (!err) {
+	                        alert('✅ ĐÃ KHÔI PHỤC THÀNH CÔNG!\nToàn bộ dữ liệu thế hệ 1-7 đã được nạp lại lên Firebase.');
+	                        location.reload(); // Tải lại trang
+	                    } else {
+	                        alert('Lỗi khi nạp lại dữ liệu: ' + err.message);
+	                    }
+	                });
+	            }
+	        });
+	    }
+	}
+        
         function openModal(id) {
             document.getElementById(id).classList.add('active');
         }
