@@ -1561,6 +1561,8 @@
                 <button class="btn" onclick="closeModal('guideModal')">Đã Hiểu</button>
             </div>
         </div>
+    </div>
+
     <!-- 7. MODAL: QUẢN LÝ PHÂN QUYỀN BAN QUẢN TRỊ (ADMINS MODAL) -->
     <div class="modal" id="adminsModal">
         <div class="modal-content" style="max-width: 680px;">
@@ -1717,7 +1719,16 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
 
         let familyMembers = [];
         let pendingRequests = [];
-        let adminList = {}; // Node /admins từ Firebase
+        let adminList = {
+            'ntthang_tc@tdapt_com': {
+                name: 'Nguyễn Thế Thắng',
+                email: ROOT_ADMIN_EMAIL,
+                phone: '0987xxxxxx',
+                role: 'ROOT_ADMIN',
+                title: 'Trưởng Ban Quản Trị',
+                addedAt: 'Tài khoản gốc'
+            }
+        }; // Node /admins từ Firebase
         let currentRole = 'USER'; // 'USER', 'ROOT_ADMIN', hoặc 'MODERATOR'
         let currentUser = null;
         let currentSelectedId = null;
@@ -1926,9 +1937,13 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
                     };
                 }
                 evaluateUserRole();
-                if (document.getElementById('adminsModal').classList.contains('active')) {
+                const adminsModalEl = document.getElementById('adminsModal');
+                if (adminsModalEl && adminsModalEl.classList.contains('active')) {
                     renderAdminsList();
                 }
+            }, (error) => {
+                console.warn("Lưu ý: Không thể tải danh sách admins từ Firebase:", error.message);
+                evaluateUserRole();
             });
         }
 
@@ -3061,8 +3076,10 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
 
         function openBulkImportModal() {
             parsedBulkMembers = [];
-            document.getElementById('bulkImportPreview').innerHTML = '';
-            document.getElementById('btn-save-bulk').style.display = 'none';
+            const preview = document.getElementById('bulkImportPreview');
+            if (preview) preview.innerHTML = '';
+            const saveBtn = document.getElementById('btn-save-bulk');
+            if (saveBtn) saveBtn.style.display = 'none';
             openModal('importModal');
         }
 
@@ -3250,12 +3267,27 @@ Nguyễn Thị Ngọc	6	Nguyễn Văn Minh	Nữ	12/03/1996			Đà Nẵng	Con gá
 
         // ==================== MODAL HELPERS ====================
         function openModal(id) {
-            document.getElementById(id).classList.add('active');
+            const modalEl = document.getElementById(id);
+            if (modalEl) {
+                modalEl.classList.add('active');
+            } else {
+                console.error("Không tìm thấy modal với id:", id);
+            }
         }
 
         function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
+            const modalEl = document.getElementById(id);
+            if (modalEl) {
+                modalEl.classList.remove('active');
+            }
         }
+
+        // Đóng modal khi bấm ra vùng nền mờ bên ngoài
+        window.addEventListener('click', function(e) {
+            if (e.target && e.target.classList && e.target.classList.contains('modal')) {
+                e.target.classList.remove('active');
+            }
+        });
     </script>
 </body>
 </html>
