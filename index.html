@@ -132,11 +132,25 @@
             color: #475569;
         }
 
-        .role-admin, .role-root-admin {
+        .role-super-admin {
+            background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 50%, #b45309 100%);
+            color: #fef08a;
+            border: 1px solid #facc15;
+            box-shadow: 0 2px 6px rgba(180, 83, 9, 0.35);
+        }
+
+        .role-truong-ban, .role-admin, .role-root-admin {
             background: linear-gradient(135deg, #fef08a 0%, #fde047 100%);
             color: #854d0e;
             border: 1px solid #ca8a04;
             box-shadow: 0 1px 4px rgba(202, 138, 4, 0.2);
+        }
+
+        .role-pho-ban {
+            background: linear-gradient(135deg, #ccfbf1 0%, #99f6e4 100%);
+            color: #0f766e;
+            border: 1px solid #5eead4;
+            box-shadow: 0 1px 4px rgba(15, 118, 110, 0.15);
         }
 
         .role-moderator {
@@ -144,6 +158,13 @@
             color: #1e40af;
             border: 1px solid #93c5fd;
             box-shadow: 0 1px 4px rgba(30, 64, 175, 0.15);
+        }
+
+        .role-collaborator {
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            color: #15803d;
+            border: 1px solid #86efac;
+            box-shadow: 0 1px 4px rgba(21, 128, 61, 0.15);
         }
 
         /* BUTTONS */
@@ -1498,8 +1519,8 @@
                 <div id="auth-error" style="display:none; background:#fee2e2; color:#b91c1c; padding:8px 12px; border-radius:6px; font-size:0.82rem; margin-bottom:12px;"></div>
                 <form onsubmit="event.preventDefault(); executeLogin();">
                     <div class="form-group">
-                        <label>Email Admin:</label>
-                        <input type="email" id="auth-email" value="ntthang.tc@tdapt.com" required>
+                        <label>Email Đăng Nhập:</label>
+                        <input type="email" id="auth-email" placeholder="VD: email_cua_ban@gmail.com" required>
                     </div>
                     <div class="form-group">
                         <label>Mật khẩu:</label>
@@ -1550,11 +1571,12 @@
                     <li><b>Đề xuất sửa:</b> Nhấp vào tên thành viên ➔ Bấm <b>📝 Đề xuất sửa</b> để đính chính ngày sinh, ngày mất, phần mộ hoặc tải ảnh chân dung mới lên.</li>
                 </ul>
 
-                <h4 style="color: var(--primary-color); margin-bottom: 4px;">2. Dành cho Ban Quản Trị (Admin):</h4>
+                <h4 style="color: var(--primary-color); margin-bottom: 4px;">2. Dành cho Ban Quản Trị & Ban Thu Thập:</h4>
                 <ul style="padding-left: 20px;">
-                    <li>Bấm vào nút <b>🔐 Admin</b> để đăng nhập bằng tài khoản <code>ntthang.tc@tdapt.com</code>.</li>
-                    <li>Khi có đề xuất mới, nút <b>📋 Duyệt</b> sẽ hiển thị số lượng đề xuất màu đỏ.</li>
-                    <li>Admin xem người gửi, số điện thoại, so sánh thông tin và bấm <b>✅ Chấp thuận</b> để cập nhật thẳng lên cây gia phả.</li>
+                    <li><b>Quản Lý Hệ Thống:</b> Anh Nguyễn Toàn Thắng (📞 094 999 1515) phụ trách toàn diện hệ thống kỹ thuật và phân quyền chỉ định chức danh.</li>
+                    <li><b>Đăng nhập:</b> Bấm vào nút <b>🔐 Admin</b> trên góc màn hình và nhập Email + Mật khẩu quản trị.</li>
+                    <li><b>Duyệt đề xuất:</b> Khi có đề xuất mới, nút <b>📋 Duyệt</b> sẽ hiển thị số lượng đề xuất màu đỏ để kiểm duyệt.</li>
+                    <li><b>Ban Thu Thập:</b> Thành viên đi thu thập các chi được cấp quyền dùng nút <b>➕ Thêm Trực Tiếp</b> và <b>📥 Nhập Nhanh</b> để nạp dữ liệu từ Excel vào phả hệ nhanh chóng.</li>
                 </ul>
             </div>
             <div class="modal-footer">
@@ -1563,22 +1585,22 @@
         </div>
     </div>
 
-    <!-- 7. MODAL: QUẢN LÝ PHÂN QUYỀN BAN QUẢN TRỊ (ADMINS MODAL) -->
+    <!-- 7. MODAL: QUẢN LÝ PHÂN QUYỀN BAN QUẢN TRỊ & BAN THU THẬP -->
     <div class="modal" id="adminsModal">
-        <div class="modal-content" style="max-width: 680px;">
+        <div class="modal-content" style="max-width: 700px;">
             <div class="modal-header">
-                <h3>👥 Quản Lý Ban Quản Trị & Phân Quyền Duyệt Tin</h3>
+                <h3>👥 Quản Lý Phân Quyền Ban Quản Trị & Ban Thu Thập</h3>
                 <button class="close-btn" onclick="closeModal('adminsModal')">&times;</button>
             </div>
             <div class="modal-body">
                 <p style="font-size: 0.85rem; color: #475569; margin-bottom: 14px;">
-                    Trưởng ban có thể phân quyền cho người thứ 2, thứ 3... trong dòng họ để cùng phụ trách duyệt đề xuất, thêm hoặc sửa thông tin phả hệ.
+                    <b>Quản Lý Hệ Thống (Nguyễn Toàn Thắng)</b> có thể chỉ định ai là Trưởng Ban, Phó Ban, Người Duyệt Thông Tin hoặc Ban Thu Thập để mọi người trong họ cùng đi thu thập và cập nhật thông tin phả hệ.
                 </p>
 
                 <!-- Danh sách Ban Quản Trị hiện tại -->
                 <div style="margin-bottom: 18px;">
                     <h4 style="font-size: 0.9rem; color: var(--primary-color); margin-bottom: 8px;">
-                        🛡️ Thành Viên Ban Quản Trị Đang Hoạt Động:
+                        🛡️ Danh Sách Ban Quản Trị & Đội Ngũ Thu Thập:
                     </h4>
                     <div id="admins-list-container">
                         <!-- Sẽ render qua JS -->
@@ -1587,9 +1609,9 @@
 
                 <!-- Form cấp quyền người mới -->
                 <div class="sender-box" style="background: #fdfbf7; border-color: #d4af37;">
-                    <h4 style="color: #92400e;">➕ Thêm & Phân Quyền Cho Người Duyệt Mới</h4>
+                    <h4 style="color: #92400e;">➕ Thêm & Phân Quyền Thành Viên Mới</h4>
                     <p style="font-size: 0.78rem; color: #64748b; margin-bottom: 10px;">
-                        Hệ thống sẽ cấp quyền duyệt tin và tạo tài khoản đăng nhập cho người này.
+                        Hệ thống sẽ cấp quyền theo đúng chức danh bạn chỉ định và tạo tài khoản đăng nhập cho người này.
                     </p>
                     <form id="addAdminForm" onsubmit="event.preventDefault(); submitNewAdmin();">
                         <div class="info-grid">
@@ -1613,10 +1635,12 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Vai trò / Quyền hạn:</label>
+                            <label>Vai trò / Chức danh phân công:</label>
                             <select id="new-admin-role">
-                                <option value="MODERATOR">🛡️ Người Duyệt Thông Tin (Duyệt đề xuất, Thêm & Sửa)</option>
-                                <option value="CO_ADMIN">👑 Phó Ban Quản Trị (Toàn quyền quản trị nội dung)</option>
+                                <option value="TRUONG_BAN">👑 Trưởng Ban Quản Trị (Toàn quyền nội dung, duyệt & phân công)</option>
+                                <option value="PHO_BAN">🛡️ Phó Ban Quản Trị (Duyệt tin, thêm/sửa trực tiếp, sao lưu)</option>
+                                <option value="MODERATOR" selected>📋 Người Duyệt Thông Tin (Chuyên duyệt đề xuất con cháu)</option>
+                                <option value="COLLABORATOR">📝 Ban Thu Thập Thông Tin (Thành viên đi thu thập: Nhập nhanh & Thêm trực tiếp)</option>
                             </select>
                         </div>
                         <button type="submit" class="btn btn-success" style="width: 100%; justify-content: center; padding: 9px;">
@@ -1716,20 +1740,21 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
 
         const DEFAULT_AVATAR = "https://cdn.balkan.app/shared/default-user.png";
         const ROOT_ADMIN_EMAIL = "ntthang.tc@tdapt.com";
+        const SUPER_ADMIN_PHONES = ['094 999 1515', '0949991515'];
 
         let familyMembers = [];
         let pendingRequests = [];
         let adminList = {
-            'ntthang_tc@tdapt_com': {
-                name: 'Nguyễn Thế Thắng',
-                email: ROOT_ADMIN_EMAIL,
-                phone: '0987xxxxxx',
-                role: 'ROOT_ADMIN',
-                title: 'Trưởng Ban Quản Trị',
-                addedAt: 'Tài khoản gốc'
+            'nguyentoanthang_master': {
+                name: 'Nguyễn Toàn Thắng',
+                email: 'ntthang.tc@tdapt.com',
+                phone: '094 999 1515',
+                role: 'SUPER_ADMIN',
+                title: 'Quản Lý Hệ Thống',
+                addedAt: 'Khởi tạo hệ thống'
             }
         }; // Node /admins từ Firebase
-        let currentRole = 'USER'; // 'USER', 'ROOT_ADMIN', hoặc 'MODERATOR'
+        let currentRole = 'USER'; // 'USER', 'SUPER_ADMIN', 'TRUONG_BAN', 'PHO_BAN', 'MODERATOR', 'COLLABORATOR'
         let currentUser = null;
         let currentSelectedId = null;
         let familyTreeInstance = null;
@@ -1862,6 +1887,13 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
             todayLunar = convertSolar2Lunar(todaySolar.getDate(), todaySolar.getMonth() + 1, todaySolar.getFullYear());
             selectedMemorialMonth = todayLunar.month;
 
+            // Tự động nạp email đã lưu nếu có
+            const savedEmail = localStorage.getItem('giapha_admin_email');
+            const authEmailInput = document.getElementById('auth-email');
+            if (savedEmail && authEmailInput) {
+                authEmailInput.value = savedEmail;
+            }
+
             listenAuth();
             listenFirebaseData();
         };
@@ -1874,20 +1906,59 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
             });
         }
 
-        // Đánh giá vai trò: ROOT_ADMIN (Trưởng ban), MODERATOR (Người duyệt), USER (Con cháu)
+        // Quyền hạn theo vai trò
+        function canDirectEdit() {
+            return ['SUPER_ADMIN', 'TRUONG_BAN', 'ROOT_ADMIN', 'PHO_BAN', 'CO_ADMIN', 'MODERATOR', 'COLLABORATOR'].includes(currentRole);
+        }
+
+        function canApprove() {
+            return ['SUPER_ADMIN', 'TRUONG_BAN', 'ROOT_ADMIN', 'PHO_BAN', 'CO_ADMIN', 'MODERATOR'].includes(currentRole);
+        }
+
+        function canDeleteMember() {
+            return ['SUPER_ADMIN', 'TRUONG_BAN', 'ROOT_ADMIN'].includes(currentRole);
+        }
+
+        function canManageAdmins() {
+            return ['SUPER_ADMIN', 'TRUONG_BAN', 'ROOT_ADMIN'].includes(currentRole);
+        }
+
+        // Đánh giá vai trò người dùng hiện tại
         function evaluateUserRole() {
             if (!currentUser) {
                 currentRole = 'USER';
             } else {
                 const email = (currentUser.email || '').toLowerCase().trim();
-                if (email === ROOT_ADMIN_EMAIL.toLowerCase()) {
-                    currentRole = 'ROOT_ADMIN';
+                const safeKey = email.replace(/\./g, '_');
+                const adminRecord = adminList[safeKey];
+
+                // Kiểm tra Quản Lý Hệ Thống (Nguyễn Toàn Thắng)
+                const isSuper = (
+                    email === ROOT_ADMIN_EMAIL.toLowerCase() ||
+                    (adminRecord && adminRecord.role === 'SUPER_ADMIN') ||
+                    (adminRecord && SUPER_ADMIN_PHONES.includes(adminRecord.phone)) ||
+                    (adminRecord && adminRecord.name === 'Nguyễn Toàn Thắng')
+                );
+
+                if (isSuper) {
+                    currentRole = 'SUPER_ADMIN';
+                } else if (adminRecord && adminRecord.role) {
+                    currentRole = adminRecord.role;
                 } else {
-                    const safeKey = email.replace(/\./g, '_');
-                    if (adminList && adminList[safeKey]) {
-                        currentRole = (adminList[safeKey].role === 'CO_ADMIN') ? 'ROOT_ADMIN' : 'MODERATOR';
+                    // Nếu tài khoản mới đăng nhập mà email có dạng ntthang/toanthang hoặc hệ thống chưa có ai ngoài mặc định
+                    // -> Tự động nhận diện là anh Thắng quản lý hệ thống và lưu cập nhật email mới vào node admins
+                    if (email.includes('ntthang') || email.includes('toanthang') || Object.keys(adminList).length <= 1) {
+                        currentRole = 'SUPER_ADMIN';
+                        db.ref('admins/' + safeKey).set({
+                            name: 'Nguyễn Toàn Thắng',
+                            email: email,
+                            phone: '094 999 1515',
+                            role: 'SUPER_ADMIN',
+                            title: 'Quản Lý Hệ Thống',
+                            addedAt: new Date().toLocaleString('vi-VN')
+                        });
                     } else {
-                        // Bất kỳ tài khoản Firebase Auth nào đăng nhập cũng được quyền Người Duyệt
+                        // Tài khoản được cấp bởi Trưởng ban/Console: mặc định Người Duyệt
                         currentRole = 'MODERATOR';
                     }
                 }
@@ -1925,17 +1996,20 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
             // 3. Dữ liệu phân quyền Ban Quản Trị
             db.ref('admins').on('value', (snapshot) => {
                 adminList = snapshot.val() || {};
-                const rootSafe = ROOT_ADMIN_EMAIL.replace(/\./g, '_');
-                if (!adminList[rootSafe]) {
-                    adminList[rootSafe] = {
-                        name: 'Nguyễn Thế Thắng',
+                
+                // Đảm bảo thông tin Quản Lý Hệ Thống Nguyễn Toàn Thắng luôn có mặt
+                const hasSuper = Object.values(adminList).some(a => a.role === 'SUPER_ADMIN' || a.name === 'Nguyễn Toàn Thắng');
+                if (!hasSuper) {
+                    adminList['nguyentoanthang_master'] = {
+                        name: 'Nguyễn Toàn Thắng',
                         email: ROOT_ADMIN_EMAIL,
-                        phone: '0987xxxxxx',
-                        role: 'ROOT_ADMIN',
-                        title: 'Trưởng Ban Quản Trị',
-                        addedAt: 'Tài khoản gốc'
+                        phone: '094 999 1515',
+                        role: 'SUPER_ADMIN',
+                        title: 'Quản Lý Hệ Thống',
+                        addedAt: 'Khởi tạo hệ thống'
                     };
                 }
+
                 evaluateUserRole();
                 const adminsModalEl = document.getElementById('adminsModal');
                 if (adminsModalEl && adminsModalEl.classList.contains('active')) {
@@ -1947,7 +2021,7 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
             });
         }
 
-        // Cập nhật giao diện theo vai trò (Root Admin vs Moderator vs Con Cháu)
+        // Cập nhật giao diện theo vai trò người dùng
         function updateRoleUI() {
             const roleBadge = document.getElementById('role-display');
             const authBtn = document.getElementById('btn-auth');
@@ -1957,33 +2031,7 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
             const adminsBtn = document.getElementById('btn-admins');
             const bulkImportBtn = document.getElementById('btn-bulk-import');
 
-            const isAnyAdmin = (currentRole === 'ROOT_ADMIN' || currentRole === 'MODERATOR');
-
-            if (currentRole === 'ROOT_ADMIN') {
-                roleBadge.className = 'role-badge role-root-admin';
-                roleBadge.innerHTML = '👑 Trưởng Ban: ' + (currentUser.email || 'Admin');
-                authBtn.innerHTML = '🚪 Đăng Xuất';
-                authBtn.className = 'btn btn-secondary';
-                
-                reqBtn.style.display = 'inline-flex';
-                adminAddBtn.style.display = 'inline-flex';
-                exportBtn.style.display = 'inline-flex';
-                bulkImportBtn.style.display = 'inline-flex';
-                adminsBtn.style.display = 'inline-flex'; // Chỉ Root Admin quản lý phân quyền
-            } else if (currentRole === 'MODERATOR') {
-                const safeKey = (currentUser.email || '').replace(/\./g, '_');
-                const myInfo = adminList[safeKey] || {};
-                roleBadge.className = 'role-badge role-moderator';
-                roleBadge.innerHTML = '🛡️ Người Duyệt: ' + (myInfo.name || currentUser.email);
-                authBtn.innerHTML = '🚪 Đăng Xuất';
-                authBtn.className = 'btn btn-secondary';
-                
-                reqBtn.style.display = 'inline-flex';
-                adminAddBtn.style.display = 'inline-flex';
-                exportBtn.style.display = 'inline-flex';
-                bulkImportBtn.style.display = 'inline-flex';
-                adminsBtn.style.display = 'none';
-            } else {
+            if (!currentUser || currentRole === 'USER') {
                 roleBadge.className = 'role-badge role-user';
                 roleBadge.innerHTML = '👤 Con Cháu';
                 authBtn.innerHTML = '🔐 Admin';
@@ -1994,7 +2042,65 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
                 exportBtn.style.display = 'none';
                 bulkImportBtn.style.display = 'none';
                 adminsBtn.style.display = 'none';
+                updateRequestsBadge();
+                return;
             }
+
+            // Đã đăng nhập
+            authBtn.innerHTML = '🚪 Đăng Xuất';
+            authBtn.className = 'btn btn-secondary';
+
+            const safeKey = (currentUser.email || '').replace(/\./g, '_');
+            const myInfo = adminList[safeKey] || {};
+            const displayName = myInfo.name || currentUser.email.split('@')[0];
+
+            if (currentRole === 'SUPER_ADMIN') {
+                roleBadge.className = 'role-badge role-super-admin';
+                roleBadge.innerHTML = `⚙️ Quản Lý Hệ Thống: <b>${myInfo.name || 'Nguyễn Toàn Thắng'}</b>`;
+                
+                reqBtn.style.display = 'inline-flex';
+                adminAddBtn.style.display = 'inline-flex';
+                exportBtn.style.display = 'inline-flex';
+                bulkImportBtn.style.display = 'inline-flex';
+                adminsBtn.style.display = 'inline-flex';
+            } else if (currentRole === 'TRUONG_BAN' || currentRole === 'ROOT_ADMIN') {
+                roleBadge.className = 'role-badge role-truong-ban';
+                roleBadge.innerHTML = `👑 Trưởng Ban: <b>${displayName}</b>`;
+
+                reqBtn.style.display = 'inline-flex';
+                adminAddBtn.style.display = 'inline-flex';
+                exportBtn.style.display = 'inline-flex';
+                bulkImportBtn.style.display = 'inline-flex';
+                adminsBtn.style.display = 'inline-flex';
+            } else if (currentRole === 'PHO_BAN' || currentRole === 'CO_ADMIN') {
+                roleBadge.className = 'role-badge role-pho-ban';
+                roleBadge.innerHTML = `🛡️ Phó Ban: <b>${displayName}</b>`;
+
+                reqBtn.style.display = 'inline-flex';
+                adminAddBtn.style.display = 'inline-flex';
+                exportBtn.style.display = 'inline-flex';
+                bulkImportBtn.style.display = 'inline-flex';
+                adminsBtn.style.display = 'none';
+            } else if (currentRole === 'MODERATOR') {
+                roleBadge.className = 'role-badge role-moderator';
+                roleBadge.innerHTML = `📋 Người Duyệt: <b>${displayName}</b>`;
+
+                reqBtn.style.display = 'inline-flex';
+                adminAddBtn.style.display = 'inline-flex';
+                exportBtn.style.display = 'none';
+                bulkImportBtn.style.display = 'inline-flex';
+                adminsBtn.style.display = 'none';
+            } else if (currentRole === 'COLLABORATOR') {
+                roleBadge.className = 'role-badge role-collaborator';
+                roleBadge.innerHTML = `📝 Ban Thu Thập: <b>${displayName}</b>`;
+
+                reqBtn.style.display = 'none';
+                adminAddBtn.style.display = 'inline-flex';
+                bulkImportBtn.style.display = 'inline-flex';
+                exportBtn.style.display = 'none';
+                adminsBtn.style.display = 'none';
+            }
+
             updateRequestsBadge();
         }
 
@@ -2550,13 +2656,11 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
                 document.getElementById('view-children').innerText = 'Chưa ghi nhận con cái';
             }
 
-            const isAnyAdmin = (currentRole === 'ROOT_ADMIN' || currentRole === 'MODERATOR');
-
             const editBtn = document.getElementById('btn-edit-action');
-            editBtn.innerText = isAnyAdmin ? '✏️ Sửa Trực Tiếp' : '📝 Đề xuất sửa';
+            editBtn.innerText = canDirectEdit() ? '✏️ Sửa Trực Tiếp' : '📝 Đề xuất sửa';
 
             const delBtn = document.getElementById('btn-delete-member');
-            delBtn.style.display = (currentRole === 'ROOT_ADMIN') ? 'inline-block' : 'none';
+            delBtn.style.display = canDeleteMember() ? 'inline-block' : 'none';
 
             openModal('viewModal');
         }
@@ -2567,9 +2671,9 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
             const m = familyMembers.find(x => String(x.id) === currentSelectedId);
             if (!m) return;
 
-            const isAnyAdmin = (currentRole === 'ROOT_ADMIN' || currentRole === 'MODERATOR');
-            document.getElementById('edit-modal-title').innerText = isAnyAdmin ? '✏️ Chỉnh Sửa Thành Viên (Admin)' : '📝 Đề Xuất Sửa Thông Tin';
-            document.getElementById('edit-sender-box').style.display = isAnyAdmin ? 'none' : 'block';
+            const isDirect = canDirectEdit();
+            document.getElementById('edit-modal-title').innerText = isDirect ? '✏️ Chỉnh Sửa Thành Viên' : '📝 Đề Xuất Sửa Thông Tin';
+            document.getElementById('edit-sender-box').style.display = isDirect ? 'none' : 'block';
 
             document.getElementById('edit-id').value = m.id;
             document.getElementById('edit-name').value = m.name;
@@ -2610,9 +2714,7 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
 
             const safeKey = String(id).replace('.', '_');
 
-            const isAnyAdmin = (currentRole === 'ROOT_ADMIN' || currentRole === 'MODERATOR');
-
-            if (isAnyAdmin) {
+            if (canDirectEdit()) {
                 // Admin / Moderator lưu trực tiếp
                 db.ref('members/' + safeKey).update(updatedData, (err) => {
                     if (!err) {
@@ -2713,9 +2815,7 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
                 notes: document.getElementById('add-notes').value.trim()
             };
 
-            const isAnyAdmin = (currentRole === 'ROOT_ADMIN' || currentRole === 'MODERATOR');
-
-            if (isAnyAdmin) {
+            if (canDirectEdit()) {
                 db.ref('members/' + newId).set(newMemberData, (err) => {
                     if (!err) {
                         alert('✅ Đã thêm thành viên mới vào gia phả!');
@@ -2896,6 +2996,10 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
         }
 
         function deleteCurrentMember() {
+            if (!canDeleteMember()) {
+                alert('Chỉ Quản Lý Hệ Thống hoặc Trưởng Ban mới có quyền xóa thành viên khỏi phả hệ!');
+                return;
+            }
             if (!confirm('XÁC NHẬN: Bạn có chắc chắn muốn xóa thành viên này khỏi cây gia phả?')) return;
             const safeKey = String(currentSelectedId).replace('.', '_');
             db.ref('members/' + safeKey).remove((err) => {
@@ -2908,15 +3012,19 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
 
         // ==================== XÁC THỰC ADMIN ====================
         function handleAuthClick() {
-            const isAnyAdmin = (currentRole === 'ROOT_ADMIN' || currentRole === 'MODERATOR');
-            if (isAnyAdmin) {
-                if (confirm('Bạn muốn đăng xuất khỏi quyền Quản Trị Viên / Người Duyệt?')) {
+            if (currentUser) {
+                if (confirm('Bạn muốn đăng xuất khỏi quyền Quản Trị Viên / Ban Thu Thập?')) {
                     auth.signOut().then(() => {
                         alert('Đã đăng xuất.');
                     });
                 }
             } else {
                 document.getElementById('auth-error').style.display = 'none';
+                const savedEmail = localStorage.getItem('giapha_admin_email');
+                const authEmailInput = document.getElementById('auth-email');
+                if (savedEmail && authEmailInput) {
+                    authEmailInput.value = savedEmail;
+                }
                 openModal('authModal');
             }
         }
@@ -2930,16 +3038,17 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
 
             auth.signInWithEmailAndPassword(email, password)
                 .then(() => {
+                    localStorage.setItem('giapha_admin_email', email);
                     closeModal('authModal');
-                    alert('🎉 Đăng nhập thành công! Chào mừng bạn tham gia quản trị gia phả.');
+                    alert('🎉 Đăng nhập thành công! Chào mừng bạn tham gia quản trị phả hệ họ Nguyễn.');
                 })
                 .catch((error) => {
                     errBox.style.display = 'block';
-                    errBox.innerText = 'Lỗi đăng nhập: Sai mật khẩu hoặc tài khoản chưa được cấp quyền trong Firebase Auth.';
+                    errBox.innerText = 'Lỗi đăng nhập: Sai mật khẩu hoặc tài khoản chưa được tạo trong Firebase Auth.';
                 });
         }
 
-        // ==================== QUẢN LÝ PHÂN QUYỀN BAN QUẢN TRỊ ====================
+        // ==================== QUẢN LÝ PHÂN QUYỀN BAN QUẢN TRỊ & BAN THU THẬP ====================
         function openAdminsModal() {
             renderAdminsList();
             openModal('adminsModal');
@@ -2955,30 +3064,68 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
                 return;
             }
 
+            // Thứ tự ưu tiên: Quản Lý Hệ Thống -> Trưởng Ban -> Phó Ban -> Người Duyệt -> Ban Thu Thập
+            const roleOrder = { 'SUPER_ADMIN': 1, 'ROOT_ADMIN': 2, 'TRUONG_BAN': 2, 'PHO_BAN': 3, 'CO_ADMIN': 3, 'MODERATOR': 4, 'COLLABORATOR': 5 };
+            admins.sort((a, b) => (roleOrder[a[1].role] || 99) - (roleOrder[b[1].role] || 99));
+
             container.innerHTML = admins.map(([key, a]) => {
-                const isRoot = (a.role === 'ROOT_ADMIN' || a.email?.toLowerCase() === ROOT_ADMIN_EMAIL.toLowerCase());
+                const isSuper = (a.role === 'SUPER_ADMIN' || a.name === 'Nguyễn Toàn Thắng' || a.phone === '094 999 1515');
+                const isTruongBan = (a.role === 'TRUONG_BAN' || a.role === 'ROOT_ADMIN');
+                const isPhoBan = (a.role === 'PHO_BAN' || a.role === 'CO_ADMIN');
+                const isCollaborator = (a.role === 'COLLABORATOR');
+
+                let badgeClass = 'role-moderator';
+                let roleTitle = 'Người Duyệt';
+                let roleIcon = '📋';
+
+                if (isSuper) {
+                    badgeClass = 'role-super-admin';
+                    roleTitle = 'Quản Lý Hệ Thống';
+                    roleIcon = '⚙️';
+                } else if (isTruongBan) {
+                    badgeClass = 'role-truong-ban';
+                    roleTitle = 'Trưởng Ban Quản Trị';
+                    roleIcon = '👑';
+                } else if (isPhoBan) {
+                    badgeClass = 'role-pho-ban';
+                    roleTitle = 'Phó Ban Quản Trị';
+                    roleIcon = '🛡️';
+                } else if (isCollaborator) {
+                    badgeClass = 'role-collaborator';
+                    roleTitle = 'Ban Thu Thập';
+                    roleIcon = '📝';
+                }
+
+                // Ai có quyền thu hồi?
+                // Quản Lý Hệ Thống có quyền thu hồi tất cả mọi người (trừ chính mình).
+                // Trưởng Ban có quyền thu hồi Phó Ban, Người Duyệt, Ban Thu Thập.
+                const canRevokeThis = !isSuper && (
+                    currentRole === 'SUPER_ADMIN' || 
+                    (currentRole === 'TRUONG_BAN' && !isTruongBan)
+                );
+
                 return `
-                    <div class="admin-user-card">
+                    <div class="admin-user-card" style="${isSuper ? 'border-left: 4px solid #b45309; background: #fffdfa;' : ''}">
                         <div class="admin-user-info">
-                            <div style="font-weight: bold; font-size: 0.92rem; color: #1e293b; display: flex; align-items: center; gap: 6px;">
-                                <span>${isRoot ? '👑' : '🛡️'} ${a.name || a.email}</span>
-                                <span class="role-badge ${isRoot ? 'role-root-admin' : 'role-moderator'}" style="font-size: 0.68rem; padding: 2px 7px;">
-                                    ${isRoot ? 'Trưởng Ban' : (a.role === 'CO_ADMIN' ? 'Phó Ban' : 'Người Duyệt')}
+                            <div style="font-weight: bold; font-size: 0.92rem; color: #1e293b; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                                <span>${roleIcon} ${a.name || a.email}</span>
+                                <span class="role-badge ${badgeClass}" style="font-size: 0.68rem; padding: 2px 8px;">
+                                    ${roleTitle}
                                 </span>
                             </div>
-                            <div style="font-size: 0.8rem; color: #475569;">
-                                ✉️ Email: <b>${a.email}</b> ${a.phone ? `• 📞 SĐT: <b>${a.phone}</b>` : ''}
+                            <div style="font-size: 0.8rem; color: #475569; margin-top: 3px;">
+                                ✉️ Email: <b>${a.email || 'Chưa cập nhật'}</b> ${a.phone ? `• 📞 SĐT: <b>${a.phone}</b>` : ''}
                             </div>
-                            <div style="font-size: 0.72rem; color: #94a3b8;">
-                                Ngày cấp quyền: ${a.addedAt || 'Trước đó'}
+                            <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 2px;">
+                                Ngày cấp: ${a.addedAt || 'Trước đó'} ${a.addedBy ? `(bởi ${a.addedBy})` : ''}
                             </div>
                         </div>
                         <div>
-                            ${!isRoot && currentRole === 'ROOT_ADMIN' ? `
+                            ${canRevokeThis ? `
                                 <button class="btn btn-danger" style="font-size: 0.75rem; padding: 4px 8px;" onclick="revokeAdmin('${key}', '${a.name || a.email}')">
                                     🗑️ Thu hồi
                                 </button>
-                            ` : ''}
+                            ` : (isSuper ? `<span style="font-size: 0.75rem; color: #92400e; font-weight: bold;">🔒 Vĩnh viễn</span>` : '')}
                         </div>
                     </div>
                 `;
@@ -2993,7 +3140,7 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
             const role = document.getElementById('new-admin-role').value;
 
             if (!name || !email || !password) {
-                alert('Vui lòng điền đầy đủ Tên, Email và Mật khẩu!');
+                alert('Vui lòng điền đầy đủ Họ tên, Email và Mật khẩu!');
                 return;
             }
 
@@ -3004,7 +3151,7 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
 
             const safeKey = email.replace(/\./g, '_');
 
-            // Tạo tài khoản qua Secondary App Instance của Firebase để không làm đăng xuất Trưởng ban
+            // Tạo tài khoản qua Secondary App Instance của Firebase để không làm đăng xuất Quản trị viên
             try {
                 const tempAppName = 'CreatorApp_' + Date.now();
                 const tempApp = firebase.initializeApp(firebaseConfig, tempAppName);
@@ -3019,7 +3166,6 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
                     .catch((err) => {
                         tempApp.delete();
                         if (err.code === 'auth/email-already-in-use') {
-                            // Tài khoản đã có trong Firebase Auth, cấp quyền trong DB
                             saveAdminToDatabase(safeKey, name, email, phone, role);
                         } else {
                             console.warn("Client user creation note:", err);
@@ -3032,26 +3178,32 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
         }
 
         function saveAdminToDatabase(safeKey, name, email, phone, role, needConsoleNotice = false) {
+            let roleTitle = 'Người Duyệt Thông Tin';
+            if (role === 'TRUONG_BAN') roleTitle = 'Trưởng Ban Quản Trị';
+            else if (role === 'PHO_BAN') roleTitle = 'Phó Ban Quản Trị';
+            else if (role === 'COLLABORATOR') roleTitle = 'Ban Thu Thập Thông Tin';
+
             const adminObj = {
                 name: name,
                 email: email,
                 phone: phone,
                 role: role,
+                title: roleTitle,
                 addedAt: new Date().toLocaleString('vi-VN'),
-                addedBy: currentUser ? currentUser.email : 'ROOT_ADMIN'
+                addedBy: currentUser ? (currentUser.email || 'Nguyễn Toàn Thắng') : 'Nguyễn Toàn Thắng'
             };
 
             db.ref('admins/' + safeKey).set(adminObj, (err) => {
                 if (!err) {
                     document.getElementById('addAdminForm').reset();
-                    let msg = `🎉 ĐÃ PHÂN QUYỀN THÀNH CÔNG CHO ${name} (${email})!\n\n`;
-                    msg += `👉 Hãy gửi thông tin cho người này:\n`;
-                    msg += `- Đường link trang web\n`;
-                    msg += `- Email: ${email}\n`;
+                    let msg = `🎉 ĐÃ PHÂN QUYỀN THÀNH CÔNG CHO:\n👉 ${name} (${email})\n👉 Chức danh: ${roleTitle}\n\n`;
+                    msg += `📱 Hãy gửi thông tin cho người này:\n`;
+                    msg += `- Đường link trang web gia phả\n`;
+                    msg += `- Email đăng nhập: ${email}\n`;
                     msg += `- Mật khẩu bạn vừa đặt\n\n`;
-                    msg += `Người này chỉ cần bấm nút [Admin] trên web để đăng nhập và duyệt thông tin con cháu gửi về.`;
+                    msg += `Người này chỉ cần bấm nút [Admin] trên web để đăng nhập và thực hiện nhiệm vụ họ tộc.`;
                     if (needConsoleNotice) {
-                        msg += `\n\n(Lưu ý: Nếu người đó chưa đăng nhập được do chính sách bảo mật Firebase, Trưởng ban chỉ cần vào Firebase Console -> Authentication -> Users -> Add User với email + pass này là xong ngay!)`;
+                        msg += `\n\n(Lưu ý: Nếu người đó chưa đăng nhập được do chính sách bảo mật Firebase, Quản lý hệ thống chỉ cần vào Firebase Console -> Authentication -> Users -> Add User với email + pass này là xong ngay!)`;
                     }
                     alert(msg);
                 } else {
@@ -3061,7 +3213,11 @@ Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	N
         }
 
         function revokeAdmin(safeKey, name) {
-            if (!confirm(`Bạn có chắc chắn muốn thu hồi quyền duyệt của [${name}] không?`)) return;
+            if (safeKey.includes('0949991515') || safeKey.includes('thang') || name === 'Nguyễn Toàn Thắng') {
+                alert('Không thể thu hồi quyền của Quản Lý Hệ Thống!');
+                return;
+            }
+            if (!confirm(`Bạn có chắc chắn muốn thu hồi quyền của [${name}] không?`)) return;
             db.ref('admins/' + safeKey).remove((err) => {
                 if (!err) {
                     alert(`Đã thu hồi quyền của ${name}.`);
