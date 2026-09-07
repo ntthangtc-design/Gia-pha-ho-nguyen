@@ -132,10 +132,18 @@
             color: #475569;
         }
 
-        .role-admin {
-            background-color: #fef08a;
+        .role-admin, .role-root-admin {
+            background: linear-gradient(135deg, #fef08a 0%, #fde047 100%);
             color: #854d0e;
             border: 1px solid #ca8a04;
+            box-shadow: 0 1px 4px rgba(202, 138, 4, 0.2);
+        }
+
+        .role-moderator {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+            box-shadow: 0 1px 4px rgba(30, 64, 175, 0.15);
         }
 
         /* BUTTONS */
@@ -364,6 +372,391 @@
             border-radius: 6px;
             font-size: 0.85rem;
             border: 1px solid #fde68a;
+        }
+
+        /* LỊCH GIỖ 12 THÁNG & BANNER ÂM LỊCH */
+        .memorial-today-banner {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border: 1px solid #fde68a;
+            border-left: 5px solid #d97706;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            box-shadow: 0 2px 8px rgba(217, 119, 6, 0.1);
+        }
+
+        .memorial-today-text {
+            font-size: 0.92rem;
+            color: #78350f;
+            line-height: 1.5;
+        }
+
+        .memorial-today-text b {
+            color: #9a3412;
+        }
+
+        .memorial-stat-badge {
+            background: #d97706;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.12);
+        }
+
+        .memorial-view-modes {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .mem-mode-btn {
+            background: #f1f5f9;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .mem-mode-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .mem-mode-btn.active {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 6px rgba(139, 0, 0, 0.25);
+        }
+
+        /* THANH 12 NÚT THÁNG */
+        .month-pills-bar {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding: 4px 2px 10px;
+            margin-bottom: 12px;
+            scrollbar-width: thin;
+        }
+
+        .month-pill-btn {
+            background: white;
+            border: 1px solid #cbd5e1;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .month-pill-btn:hover {
+            border-color: #d97706;
+            color: #d97706;
+        }
+
+        .month-pill-btn.active {
+            background: #d97706;
+            color: white;
+            border-color: #d97706;
+            box-shadow: 0 2px 6px rgba(217, 119, 6, 0.3);
+        }
+
+        .month-pill-btn.is-current-month {
+            border: 2px solid #ea580c;
+            color: #ea580c;
+            background: #fff7ed;
+            font-weight: bold;
+        }
+
+        .month-pill-btn.is-current-month.active {
+            background: #ea580c;
+            color: white;
+        }
+
+        .pill-count-badge {
+            background: rgba(0,0,0,0.1);
+            color: inherit;
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-size: 0.72rem;
+            margin-left: 2px;
+        }
+
+        /* LƯỚI 12 THÁNG (GRID VIEW) */
+        .memorial-grid-12 {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .month-card {
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+
+        .month-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.09);
+        }
+
+        /* ĐẶC BIỆT LÀM NỔI BẬT THÁNG HIỆN TẠI */
+        .month-card.current-month {
+            border: 2.5px solid #d97706;
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15), 0 8px 25px rgba(217, 119, 6, 0.22);
+            background: linear-gradient(180deg, #fffbeb 0%, #ffffff 70px);
+        }
+
+        .current-month-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: linear-gradient(135deg, #ea580c, #c2410c);
+            color: white;
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-bottom-left-radius: 8px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            text-transform: uppercase;
+        }
+
+        .month-card-header {
+            padding: 10px 14px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .month-card.current-month .month-card-header {
+            background: linear-gradient(90deg, #fef3c7, #fde68a);
+            border-bottom-color: #fde68a;
+        }
+
+        .month-title {
+            font-family: 'Merriweather', serif;
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .month-card.current-month .month-title {
+            color: #9a3412;
+        }
+
+        .month-count {
+            font-size: 0.76rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .month-card-body {
+            padding: 10px 12px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-height: 90px;
+        }
+
+        .month-empty {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            font-style: italic;
+            text-align: center;
+            margin: auto;
+            padding: 14px 0;
+        }
+
+        /* MỤC GIỖ TRONG THÁNG */
+        .gio-item {
+            background: #f8fafc;
+            border: 1px solid #f1f5f9;
+            border-left: 3.5px solid #d97706;
+            border-radius: 6px;
+            padding: 8px 10px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .gio-item:hover {
+            background: #fefce8;
+            border-left-color: #b45309;
+            transform: translateX(2px);
+        }
+
+        .gio-item-today {
+            background: #fef2f2 !important;
+            border-left-color: #dc2626 !important;
+            border: 1px solid #fecaca;
+            animation: pulseLight 2s infinite;
+        }
+
+        @keyframes pulseLight {
+            0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+        }
+
+        .gio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3px;
+        }
+
+        .gio-name {
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: #1e293b;
+        }
+
+        .gio-date-badge {
+            background: #fef3c7;
+            color: #92400e;
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 2px 7px;
+            border-radius: 4px;
+            border: 1px solid #fde68a;
+            white-space: nowrap;
+        }
+
+        .gio-item-today .gio-date-badge {
+            background: #dc2626;
+            color: white;
+            border-color: #b91c1c;
+        }
+
+        .gio-sub {
+            font-size: 0.76rem;
+            color: #64748b;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        /* GIAO DIỆN XEM TỪNG THÁNG CHI TIẾT */
+        .single-month-header {
+            background: linear-gradient(135deg, #7A0000 0%, #4A0000 100%);
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid var(--gold);
+        }
+
+        .single-month-header h3 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.1rem;
+            color: var(--gold);
+        }
+
+        /* ADMIN MANAGEMENT CARDS */
+        .admin-user-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        .admin-user-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        /* BULK IMPORT STYLES */
+        .bulk-import-box {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 12px;
+            background: #f8fafc;
+            margin-bottom: 12px;
+        }
+
+        .bulk-textarea {
+            width: 100%;
+            height: 160px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            outline: none;
+            resize: vertical;
+        }
+
+        .preview-table-wrap {
+            max-height: 240px;
+            overflow-y: auto;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.78rem;
+        }
+
+        .preview-table th, .preview-table td {
+            border: 1px solid #e2e8f0;
+            padding: 6px 8px;
+            text-align: left;
+        }
+
+        .preview-table th {
+            background: #f1f5f9;
+            position: sticky;
+            top: 0;
+            font-weight: 700;
+            color: #334155;
         }
 
         /* BADGES */
@@ -720,6 +1113,16 @@
                 ➕ Thêm Trực Tiếp
             </button>
 
+            <!-- Nút Phân Quyền Duyệt (Chỉ Root Admin) -->
+            <button class="btn btn-secondary" id="btn-admins" onclick="openAdminsModal()" style="display: none;" title="Quản lý và cấp quyền Người duyệt thứ 2, thứ 3...">
+                👥 Phân Quyền
+            </button>
+
+            <!-- Nút Nhập Hàng Loạt (Excel / Bảng Nhanh) -->
+            <button class="btn btn-secondary" id="btn-bulk-import" onclick="openBulkImportModal()" style="display: none;" title="Nhập hàng loạt thành viên từ bảng tính Excel">
+                📥 Nhập Nhanh
+            </button>
+
             <!-- Nút Sao Lưu (Admin) -->
             <button class="btn btn-secondary" id="btn-export" onclick="exportData()" style="display: none;" title="Tải file sao lưu JSON về máy">
                 💾 Sao Lưu
@@ -783,16 +1186,46 @@
         </div>
     </section>
 
-    <!-- VIEW 3: LỊCH NGÀY GIỖ HỌ (ÂM LỊCH) -->
+    <!-- VIEW 3: LỊCH NGÀY GIỖ HỌ (ÂM LỊCH & 12 THÁNG) -->
     <section id="view-memorial" class="view-section">
         <div class="content-scrollable">
-            <div class="search-filter-bar">
-                <h3 style="color: var(--primary-color); font-family: 'Merriweather', serif; font-size: 1.05rem;">
-                    🕯️ Bảng Tra Cứu Ngày Giỗ & Nơi An Táng Tổ Tiên
-                </h3>
+            <!-- BANNER ÂM LỊCH HÔM NAY -->
+            <div class="memorial-today-banner" id="memorial-today-banner">
+                <div class="memorial-today-text" id="memorial-today-info">
+                    <!-- Sẽ render tự động qua JS -->
+                    🏮 <b>Đang tải lịch âm dương hôm nay...</b>
+                </div>
+                <div class="memorial-stat-badge" id="memorial-stat-badge">
+                    🕯️ 0 Ngày giỗ trong tháng
+                </div>
             </div>
+
+            <!-- THANH ĐIỀU KHIỂN & CHUYỂN ĐỔI CHẾ ĐỘ XEM -->
+            <div class="search-filter-bar" style="justify-content: space-between;">
+                <div class="memorial-view-modes">
+                    <button class="mem-mode-btn active" id="btn-mode-grid12" onclick="switchMemorialMode('grid12')">
+                        🗓️ 12 Tháng Toàn Cảnh
+                    </button>
+                    <button class="mem-mode-btn" id="btn-mode-single" onclick="switchMemorialMode('single')">
+                        📆 Xem Từng Tháng
+                    </button>
+                    <button class="mem-mode-btn" id="btn-mode-list" onclick="switchMemorialMode('list')">
+                        📜 Danh Sách Đầy Đủ
+                    </button>
+                </div>
+                <div style="flex: 1; max-width: 320px; min-width: 180px;">
+                    <input type="text" id="memorialSearchInput" placeholder="🔍 Tìm tên cụ, ngày giỗ, nơi an táng..." oninput="handleMemorialSearch()" style="width: 100%;">
+                </div>
+            </div>
+
+            <!-- THANH CHỌN NHANH 12 THÁNG -->
+            <div class="month-pills-bar" id="month-pills-bar">
+                <!-- 12 nút tháng render qua JS -->
+            </div>
+
+            <!-- KHUNG CHỨA GIAO DIỆN LỊCH GIỖ -->
             <div id="memorial-container">
-                <!-- Sẽ render tự động qua JS -->
+                <!-- Sẽ render tự động qua JS theo chế độ đang chọn -->
             </div>
         </div>
     </section>
@@ -1128,6 +1561,138 @@
                 <button class="btn" onclick="closeModal('guideModal')">Đã Hiểu</button>
             </div>
         </div>
+    <!-- 7. MODAL: QUẢN LÝ PHÂN QUYỀN BAN QUẢN TRỊ (ADMINS MODAL) -->
+    <div class="modal" id="adminsModal">
+        <div class="modal-content" style="max-width: 680px;">
+            <div class="modal-header">
+                <h3>👥 Quản Lý Ban Quản Trị & Phân Quyền Duyệt Tin</h3>
+                <button class="close-btn" onclick="closeModal('adminsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 0.85rem; color: #475569; margin-bottom: 14px;">
+                    Trưởng ban có thể phân quyền cho người thứ 2, thứ 3... trong dòng họ để cùng phụ trách duyệt đề xuất, thêm hoặc sửa thông tin phả hệ.
+                </p>
+
+                <!-- Danh sách Ban Quản Trị hiện tại -->
+                <div style="margin-bottom: 18px;">
+                    <h4 style="font-size: 0.9rem; color: var(--primary-color); margin-bottom: 8px;">
+                        🛡️ Thành Viên Ban Quản Trị Đang Hoạt Động:
+                    </h4>
+                    <div id="admins-list-container">
+                        <!-- Sẽ render qua JS -->
+                    </div>
+                </div>
+
+                <!-- Form cấp quyền người mới -->
+                <div class="sender-box" style="background: #fdfbf7; border-color: #d4af37;">
+                    <h4 style="color: #92400e;">➕ Thêm & Phân Quyền Cho Người Duyệt Mới</h4>
+                    <p style="font-size: 0.78rem; color: #64748b; margin-bottom: 10px;">
+                        Hệ thống sẽ cấp quyền duyệt tin và tạo tài khoản đăng nhập cho người này.
+                    </p>
+                    <form id="addAdminForm" onsubmit="event.preventDefault(); submitNewAdmin();">
+                        <div class="info-grid">
+                            <div class="form-group">
+                                <label>Họ và Tên (*):</label>
+                                <input type="text" id="new-admin-name" placeholder="VD: Bác Nguyễn Văn Nam" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Số điện thoại liên hệ (*):</label>
+                                <input type="tel" id="new-admin-phone" placeholder="VD: 0987654321" required>
+                            </div>
+                        </div>
+                        <div class="info-grid">
+                            <div class="form-group">
+                                <label>Email đăng nhập (*):</label>
+                                <input type="email" id="new-admin-email" placeholder="VD: nguyenb@gmail.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Mật khẩu cấp cho người này (*):</label>
+                                <input type="password" id="new-admin-password" placeholder="Tối thiểu 6 ký tự" required minlength="6">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Vai trò / Quyền hạn:</label>
+                            <select id="new-admin-role">
+                                <option value="MODERATOR">🛡️ Người Duyệt Thông Tin (Duyệt đề xuất, Thêm & Sửa)</option>
+                                <option value="CO_ADMIN">👑 Phó Ban Quản Trị (Toàn quyền quản trị nội dung)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success" style="width: 100%; justify-content: center; padding: 9px;">
+                            ➕ Cấp Quyền & Tạo Tài Khoản Cho Người Này
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Hướng dẫn dự phòng -->
+                <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 10px; font-size: 0.8rem; color: #1e40af; margin-top: 12px;">
+                    <b>💡 Hướng dẫn gửi cho người được phân quyền:</b>
+                    <ol style="margin-left: 18px; margin-top: 4px;">
+                        <li>Gửi đường link trang web cho người thứ 2.</li>
+                        <li>Bảo họ bấm nút <b>🔐 Admin</b> trên góc màn hình và nhập đúng Email + Mật khẩu bạn vừa đặt ở trên.</li>
+                        <li>Sau khi đăng nhập, họ sẽ thấy nút <b>📋 Duyệt</b> màu đỏ để duyệt thông tin con cháu gửi về.</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('adminsModal')">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8. MODAL: NHẬP DỮ LIỆU HÀNG LOẠT (BULK IMPORT) -->
+    <div class="modal" id="importModal">
+        <div class="modal-content" style="max-width: 850px;">
+            <div class="modal-header">
+                <h3>📥 Nhập Dữ Liệu Hàng Loạt (Excel / Copy-Paste)</h3>
+                <button class="close-btn" onclick="closeModal('importModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 0.85rem; color: #475569; margin-bottom: 12px;">
+                    Phương án tối ưu để cập nhật đồng loạt nhiều thành viên cùng lúc: Copy các hàng từ file Excel hoặc Google Sheets rồi dán vào ô dưới đây.
+                </p>
+
+                <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
+                    <button class="btn btn-secondary" onclick="downloadExcelTemplate()">
+                        📄 Tải Bảng Mẫu Excel / CSV
+                    </button>
+                    <button class="btn btn-secondary" onclick="fillSampleImportData()">
+                        📝 Dán Dữ Liệu Mẫu Thử Nghiệm
+                    </button>
+                </div>
+
+                <div class="bulk-import-box">
+                    <label style="font-size: 0.82rem; font-weight: 700; color: #334155; margin-bottom: 6px; display: block;">
+                        Dán dữ liệu từ Excel vào đây (Các cột cách nhau bằng phím Tab):
+                    </label>
+                    <textarea id="bulkImportInput" class="bulk-textarea" placeholder="Họ và Tên	Thế hệ	Tên Cha/Mẹ	Giới tính	Ngày sinh	Ngày mất (AL)	Vợ/Chồng	Nơi an táng	Ghi chú
+Nguyễn Văn An	5	Nguyễn Văn Kế	Nam	15/04/1960		Trần Thị Mai	Hà Nam	Chi trưởng
+Nguyễn Thị Bình	5	Nguyễn Văn Kế	Nữ	10/08/1965	15/8 (AL)	Lê Văn C	Ninh Bình	Bà cô"></textarea>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; flex-wrap: wrap; gap: 8px;">
+                        <span style="font-size: 0.78rem; color: #64748b;">
+                            * Thứ tự cột: <b>Họ tên | Đời | Tên Cha/Mẹ | Giới tính | Sinh | Mất | Vợ/Chồng | An táng | Ghi chú</b>
+                        </span>
+                        <div style="display: flex; gap: 6px;">
+                            <button class="btn btn-secondary" onclick="document.getElementById('bulkImportInput').value=''; document.getElementById('bulkImportPreview').innerHTML='';" style="font-size:0.75rem; padding:4px 8px;">
+                                🧹 Xóa trắng
+                            </button>
+                            <button class="btn" onclick="parseBulkInputData()">
+                                👁️ Kiểm Tra & Xem Trước
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Xem trước kết quả parse -->
+                <div id="bulkImportPreview"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('importModal')">Hủy</button>
+                <button class="btn btn-success" id="btn-save-bulk" onclick="executeBulkSave()" style="display: none;">
+                    ✅ Xác Nhận Lưu Toàn Bộ Vào Phả Hệ
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- ==================== JAVASCRIPT LOGIC ==================== -->
@@ -1148,34 +1713,180 @@
         const auth = firebase.auth();
 
         const DEFAULT_AVATAR = "https://cdn.balkan.app/shared/default-user.png";
+        const ROOT_ADMIN_EMAIL = "ntthang.tc@tdapt.com";
 
         let familyMembers = [];
         let pendingRequests = [];
-        let currentRole = 'USER'; // 'USER' hoặc 'ADMIN'
+        let adminList = {}; // Node /admins từ Firebase
+        let currentRole = 'USER'; // 'USER', 'ROOT_ADMIN', hoặc 'MODERATOR'
+        let currentUser = null;
         let currentSelectedId = null;
         let familyTreeInstance = null;
         let activeView = 'tree'; // 'tree', 'list', 'memorial'
 
+        // Trạng thái Lịch Giỗ Họ
+        let currentMemorialMode = 'grid12'; // 'grid12' (12 tháng), 'single' (từng tháng), 'list' (danh sách)
+        let selectedMemorialMonth = 1;
+        let memorialSearchQuery = '';
+        let todaySolar = new Date();
+        let todayLunar = null;
+
+        // ==================== THUẬT TOÁN ÂM - DƯƠNG LỊCH CHUẨN VIỆT NAM (HỒ NGỌC ĐỨC) ====================
+        function jdFromDate(dd, mm, yy) {
+            let a = Math.floor((14 - mm) / 12);
+            let y = yy + 4800 - a;
+            let m = mm + 12 * a - 3;
+            let jd = dd + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+            if (jd < 2299161) {
+                jd = dd + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - 32083;
+            }
+            return jd;
+        }
+
+        function getNewMoonDay(k, timeZone = 7.0) {
+            let T = k / 1236.85;
+            let T2 = T * T;
+            let T3 = T2 * T;
+            let dr = Math.PI / 180;
+            let Jd1 = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 - 0.000000155 * T3;
+            Jd1 = Jd1 + 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * dr);
+            let M = 359.2242 + 29.10535608 * k - 0.0000333 * T2 - 0.00000347 * T3;
+            let Mpr = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3;
+            let F = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.0000239 * T3;
+            let C1 = (0.1734 - 0.000393 * T) * Math.sin(M * dr) + 0.0021 * Math.sin(2 * dr * M);
+            C1 = C1 - 0.4068 * Math.sin(Mpr * dr) + 0.0161 * Math.sin(2 * dr * Mpr);
+            C1 = C1 - 0.0004 * Math.sin(3 * dr * Mpr);
+            C1 = C1 + 0.0104 * Math.sin(2 * dr * F) - 0.0051 * Math.sin((M + Mpr) * dr);
+            C1 = C1 - 0.0074 * Math.sin((M - Mpr) * dr) + 0.0004 * Math.sin((2 * F + M) * dr);
+            C1 = C1 - 0.0004 * Math.sin((2 * F - M) * dr) - 0.0006 * Math.sin((2 * F + Mpr) * dr);
+            C1 = C1 + 0.0010 * Math.sin((2 * F - Mpr) * dr) + 0.0005 * Math.sin((M + 2 * Mpr) * dr);
+            let JdNew = Jd1 + C1;
+            return Math.floor(JdNew + 0.5 + timeZone / 24);
+        }
+
+        function getSunLongitude(jdn, timeZone = 7.0) {
+            let T = (jdn - 2451545.0 + 0.5 - timeZone / 24) / 36525;
+            let T2 = T * T;
+            let dr = Math.PI / 180;
+            let L0 = 280.46645 + 36000.76983 * T + 0.0003032 * T2;
+            let M = 357.52910 + 35999.05029 * T - 0.0001537 * T2;
+            let C = (1.914600 - 0.004817 * T - 0.000014 * T2) * Math.sin(M * dr);
+            C = C + (0.019993 - 0.000101 * T) * Math.sin(2 * M * dr) + 0.000290 * Math.sin(3 * M * dr);
+            let theta = L0 + C;
+            theta = theta * dr;
+            theta = theta - Math.PI * 2 * Math.floor(theta / (Math.PI * 2));
+            return Math.floor(theta / Math.PI * 6);
+        }
+
+        function getLunarMonth11(yy, timeZone = 7.0) {
+            let off = jdFromDate(31, 12, yy) - 2415021;
+            let k = Math.floor(off / 29.530588853);
+            let nm = getNewMoonDay(k, timeZone);
+            let sunLong = getSunLongitude(nm, timeZone);
+            if (sunLong >= 9) {
+                nm = getNewMoonDay(k - 1, timeZone);
+            }
+            return nm;
+        }
+
+        function convertSolar2Lunar(dd, mm, yyyy, timeZone = 7.0) {
+            let dayNumber = jdFromDate(dd, mm, yyyy);
+            let k = Math.floor((dayNumber - 2415021.076998695) / 29.530588853);
+            let monthStart = getNewMoonDay(k + 1, timeZone);
+            if (monthStart > dayNumber) {
+                monthStart = getNewMoonDay(k, timeZone);
+            }
+            let a11 = getLunarMonth11(yyyy, timeZone);
+            let b11 = a11;
+            let year = yyyy;
+            if (a11 >= monthStart) {
+                year = yyyy - 1;
+                a11 = getLunarMonth11(year, timeZone);
+            } else {
+                b11 = getLunarMonth11(yyyy + 1, timeZone);
+            }
+            let lunarDay = dayNumber - monthStart + 1;
+            let diff = Math.floor((monthStart - a11) / 29);
+            let lunarMonth = diff + 11;
+            if (lunarMonth > 12) {
+                lunarMonth = lunarMonth - 12;
+            }
+            if (lunarMonth >= 11 && diff < 4) {
+                year -= 1;
+            }
+            return { day: lunarDay, month: lunarMonth, year: year };
+        }
+
+        // ==================== PHÂN TÍCH NGÀY MẤT (DOD PARSER) ====================
+        function parseDeathDate(dodStr) {
+            if (!dodStr || typeof dodStr !== 'string') return null;
+            const s = dodStr.trim();
+            if (s.toLowerCase().includes('còn sống') || s.toLowerCase().includes('chưa rõ') || s === '') return null;
+
+            // Tìm ngày và tháng dạng DD/MM hoặc D/M
+            const match = s.match(/(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?/);
+            if (match) {
+                const day = parseInt(match[1], 10);
+                const month = parseInt(match[2], 10);
+                const year = match[3] ? parseInt(match[3], 10) : null;
+                const isLunar = s.toUpperCase().includes('AL') || s.toLowerCase().includes('âm');
+                if (month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+                    return { day, month, year, isLunar, raw: dodStr };
+                }
+            }
+
+            // Chỉ có năm e.g. "1985"
+            const yearMatch = s.match(/^(\d{4})$/);
+            if (yearMatch) {
+                return { day: null, month: 0, year: parseInt(yearMatch[1], 10), isLunar: false, raw: dodStr };
+            }
+
+            return { day: null, month: 0, year: null, isLunar: false, raw: dodStr };
+        }
+
         // Khởi chạy khi load trang
         window.onload = function() {
+            // Tính toán ngày âm lịch hôm nay
+            todaySolar = new Date();
+            todayLunar = convertSolar2Lunar(todaySolar.getDate(), todaySolar.getMonth() + 1, todaySolar.getFullYear());
+            selectedMemorialMonth = todayLunar.month;
+
             listenAuth();
             listenFirebaseData();
         };
 
-        // Lắng nghe trạng thái đăng nhập
+        // Lắng nghe trạng thái đăng nhập Firebase
         function listenAuth() {
             auth.onAuthStateChanged((user) => {
-                if (user) {
-                    currentRole = 'ADMIN';
-                } else {
-                    currentRole = 'USER';
-                }
-                updateRoleUI();
+                currentUser = user;
+                evaluateUserRole();
             });
+        }
+
+        // Đánh giá vai trò: ROOT_ADMIN (Trưởng ban), MODERATOR (Người duyệt), USER (Con cháu)
+        function evaluateUserRole() {
+            if (!currentUser) {
+                currentRole = 'USER';
+            } else {
+                const email = (currentUser.email || '').toLowerCase().trim();
+                if (email === ROOT_ADMIN_EMAIL.toLowerCase()) {
+                    currentRole = 'ROOT_ADMIN';
+                } else {
+                    const safeKey = email.replace(/\./g, '_');
+                    if (adminList && adminList[safeKey]) {
+                        currentRole = (adminList[safeKey].role === 'CO_ADMIN') ? 'ROOT_ADMIN' : 'MODERATOR';
+                    } else {
+                        // Bất kỳ tài khoản Firebase Auth nào đăng nhập cũng được quyền Người Duyệt
+                        currentRole = 'MODERATOR';
+                    }
+                }
+            }
+            updateRoleUI();
         }
 
         // Lắng nghe dữ liệu Realtime Database
         function listenFirebaseData() {
+            // 1. Dữ liệu thành viên gia phả
             db.ref('members').on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
@@ -1190,6 +1901,7 @@
                 refreshCurrentView();
             });
 
+            // 2. Dữ liệu đề xuất duyệt
             db.ref('requests').on('value', (snapshot) => {
                 const reqData = snapshot.val();
                 pendingRequests = reqData ? Object.values(reqData) : [];
@@ -1198,32 +1910,75 @@
                     renderRequestsList();
                 }
             });
+
+            // 3. Dữ liệu phân quyền Ban Quản Trị
+            db.ref('admins').on('value', (snapshot) => {
+                adminList = snapshot.val() || {};
+                const rootSafe = ROOT_ADMIN_EMAIL.replace(/\./g, '_');
+                if (!adminList[rootSafe]) {
+                    adminList[rootSafe] = {
+                        name: 'Nguyễn Thế Thắng',
+                        email: ROOT_ADMIN_EMAIL,
+                        phone: '0987xxxxxx',
+                        role: 'ROOT_ADMIN',
+                        title: 'Trưởng Ban Quản Trị',
+                        addedAt: 'Tài khoản gốc'
+                    };
+                }
+                evaluateUserRole();
+                if (document.getElementById('adminsModal').classList.contains('active')) {
+                    renderAdminsList();
+                }
+            });
         }
 
-        // Cập nhật giao diện theo vai trò
+        // Cập nhật giao diện theo vai trò (Root Admin vs Moderator vs Con Cháu)
         function updateRoleUI() {
             const roleBadge = document.getElementById('role-display');
             const authBtn = document.getElementById('btn-auth');
             const reqBtn = document.getElementById('btn-requests');
             const adminAddBtn = document.getElementById('btn-admin-add');
             const exportBtn = document.getElementById('btn-export');
+            const adminsBtn = document.getElementById('btn-admins');
+            const bulkImportBtn = document.getElementById('btn-bulk-import');
 
-            if (currentRole === 'ADMIN') {
-                roleBadge.className = 'role-badge role-admin';
-                roleBadge.innerHTML = '👑 Quản Trị Viên';
+            const isAnyAdmin = (currentRole === 'ROOT_ADMIN' || currentRole === 'MODERATOR');
+
+            if (currentRole === 'ROOT_ADMIN') {
+                roleBadge.className = 'role-badge role-root-admin';
+                roleBadge.innerHTML = '👑 Trưởng Ban: ' + (currentUser.email || 'Admin');
                 authBtn.innerHTML = '🚪 Đăng Xuất';
                 authBtn.className = 'btn btn-secondary';
+                
                 reqBtn.style.display = 'inline-flex';
                 adminAddBtn.style.display = 'inline-flex';
                 exportBtn.style.display = 'inline-flex';
+                bulkImportBtn.style.display = 'inline-flex';
+                adminsBtn.style.display = 'inline-flex'; // Chỉ Root Admin quản lý phân quyền
+            } else if (currentRole === 'MODERATOR') {
+                const safeKey = (currentUser.email || '').replace(/\./g, '_');
+                const myInfo = adminList[safeKey] || {};
+                roleBadge.className = 'role-badge role-moderator';
+                roleBadge.innerHTML = '🛡️ Người Duyệt: ' + (myInfo.name || currentUser.email);
+                authBtn.innerHTML = '🚪 Đăng Xuất';
+                authBtn.className = 'btn btn-secondary';
+                
+                reqBtn.style.display = 'inline-flex';
+                adminAddBtn.style.display = 'inline-flex';
+                exportBtn.style.display = 'inline-flex';
+                bulkImportBtn.style.display = 'inline-flex';
+                adminsBtn.style.display = 'none';
             } else {
                 roleBadge.className = 'role-badge role-user';
                 roleBadge.innerHTML = '👤 Con Cháu';
                 authBtn.innerHTML = '🔐 Admin';
                 authBtn.className = 'btn';
+
                 reqBtn.style.display = 'none';
                 adminAddBtn.style.display = 'none';
                 exportBtn.style.display = 'none';
+                bulkImportBtn.style.display = 'none';
+                adminsBtn.style.display = 'none';
             }
             updateRequestsBadge();
         }
@@ -1397,37 +2152,363 @@
             `).join('');
         }
 
-        // ==================== LỊCH NGÀY GIỖ (MEMORIAL VIEW) ====================
+        // ==================== LỊCH NGÀY GIỖ (12 THÁNG & ÂM LỊCH) ====================
+        const MONTH_NAMES = [
+            "", "Tháng 1 (Giêng)", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+            "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12 (Chạp)"
+        ];
+
+        function switchMemorialMode(mode) {
+            currentMemorialMode = mode;
+            document.querySelectorAll('.mem-mode-btn').forEach(b => b.classList.remove('active'));
+            const activeBtn = document.getElementById(`btn-mode-${mode}`);
+            if (activeBtn) activeBtn.classList.add('active');
+            renderMemorialView();
+        }
+
+        function selectMemorialMonth(m) {
+            selectedMemorialMonth = m;
+            switchMemorialMode('single');
+        }
+
+        function handleMemorialSearch() {
+            memorialSearchQuery = (document.getElementById('memorialSearchInput')?.value || '').toLowerCase().trim();
+            renderMemorialView();
+        }
+
         function renderMemorialView() {
             const container = document.getElementById('memorial-container');
-            const deceased = familyMembers.filter(m => m.dod && m.dod.toLowerCase() !== 'còn sống');
+            if (!container) return;
 
-            if (deceased.length === 0) {
-                container.innerHTML = `<p style="text-align:center; color:#64748b; padding:30px;">Chưa có thông tin ngày tạ thế của các thành viên.</p>`;
-                return;
+            // Thu thập các thành viên đã mất và phân tích ngày giỗ
+            let deceasedList = familyMembers
+                .filter(m => m.dod && m.dod.toLowerCase() !== 'còn sống')
+                .map(m => ({
+                    ...m,
+                    parsedDod: parseDeathDate(m.dod)
+                }));
+
+            // Đếm số lượng theo từng tháng
+            const monthCounts = Array(13).fill(0);
+            deceasedList.forEach(m => {
+                if (m.parsedDod && m.parsedDod.month >= 1 && m.parsedDod.month <= 12) {
+                    monthCounts[m.parsedDod.month]++;
+                } else {
+                    monthCounts[0]++; // Chưa rõ ngày tháng
+                }
+            });
+
+            // 1. Render Banner hôm nay (Âm lịch & Dương lịch)
+            renderMemorialTodayBanner(deceasedList, monthCounts);
+
+            // 2. Render 12 nút chọn nhanh tháng
+            renderMonthPillsBar(monthCounts);
+
+            // Lọc theo từ khóa tìm kiếm nếu có
+            if (memorialSearchQuery) {
+                deceasedList = deceasedList.filter(m => 
+                    (m.name && m.name.toLowerCase().includes(memorialSearchQuery)) ||
+                    (m.dod && m.dod.toLowerCase().includes(memorialSearchQuery)) ||
+                    (m.burial && m.burial.toLowerCase().includes(memorialSearchQuery)) ||
+                    (m.spouse && m.spouse.toLowerCase().includes(memorialSearchQuery))
+                );
             }
 
-            // Sắp xếp theo thế hệ
-            deceased.sort((a,b) => (a.gen || 0) - (b.gen || 0));
+            // 3. Render giao diện theo chế độ chọn
+            if (currentMemorialMode === 'grid12') {
+                renderMemorial12MonthsGrid(container, deceasedList, monthCounts);
+            } else if (currentMemorialMode === 'single') {
+                renderMemorialSingleMonth(container, deceasedList, selectedMemorialMonth);
+            } else {
+                renderMemorialFullList(container, deceasedList);
+            }
+        }
 
-            container.innerHTML = deceased.map(m => `
-                <div class="memorial-card" onclick="openViewModal('${m.id}')" style="cursor: pointer;">
-                    <div class="memorial-info">
-                        <div style="font-weight:bold; font-size:1rem; color:var(--primary-color);">
-                            ${m.gender === 'female' ? '👵' : '👴'} ${m.name} 
-                            <span style="font-size:0.75rem; color:#64748b; font-weight:normal;">(Thế hệ ${m.gen})</span>
-                        </div>
-                        <div style="font-size:0.85rem; color:#475569;">
-                            ${m.spouse ? `💑 Vợ/Chồng: ${m.spouse} • ` : ''}
-                            📍 Nơi an táng: <b>${m.burial || 'Chưa cập nhật'}</b>
-                        </div>
-                        ${m.notes ? `<div style="font-size:0.78rem; color:#64748b; font-style:italic;">${m.notes}</div>` : ''}
-                    </div>
-                    <div class="memorial-date">
-                        🕯️ Ngày Giỗ: ${m.dod}
-                    </div>
+        // 1. Render Banner Ngày Hôm Nay (Âm - Dương lịch)
+        function renderMemorialTodayBanner(allDeceased, monthCounts) {
+            const bannerInfo = document.getElementById('memorial-today-info');
+            const statBadge = document.getElementById('memorial-stat-badge');
+            if (!bannerInfo || !statBadge) return;
+
+            const daysOfWeek = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+            const now = new Date();
+            const dayOfWeekStr = daysOfWeek[now.getDay()];
+            const solarStr = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
+            
+            // Âm lịch
+            const curLunar = convertSolar2Lunar(now.getDate(), now.getMonth()+1, now.getFullYear());
+            todayLunar = curLunar;
+            const lunarMonth = curLunar.month;
+            const countThisMonth = monthCounts[lunarMonth] || 0;
+
+            // Kiểm tra xem hôm nay có cụ nào giỗ không
+            const todayGiỗList = allDeceased.filter(m => {
+                const p = m.parsedDod;
+                if (!p) return false;
+                if (p.isLunar) {
+                    return (p.month === curLunar.month && p.day === curLunar.day);
+                } else {
+                    return (p.month === (now.getMonth()+1) && p.day === now.getDate());
+                }
+            });
+
+            let alertHtml = '';
+            if (todayGiỗList.length > 0) {
+                alertHtml = `<div style="margin-top:4px; color:#b91c1c; font-weight:bold; font-size:0.95rem;">
+                    🔥 HÔM NAY GIỖ CỤ: ${todayGiỗList.map(c => `<b>${c.name}</b>`).join(', ')}!
+                </div>`;
+            }
+
+            bannerInfo.innerHTML = `
+                <div>
+                    🏮 <b>Hôm nay:</b> ${dayOfWeekStr}, ${solarStr} (Dương lịch) 
+                    ➔ Nhằm <b>Ngày ${curLunar.day} Tháng ${curLunar.month} Năm ${curLunar.year} (Âm Lịch)</b>.
                 </div>
-            `).join('');
+                <div style="font-size: 0.82rem; margin-top: 2px; color: #92400e;">
+                    ⭐ Đang trong <b>Tháng ${lunarMonth} Âm Lịch</b> • Gia tộc có <b>${countThisMonth}</b> ngày giỗ trong tháng này.
+                </div>
+                ${alertHtml}
+            `;
+
+            statBadge.innerHTML = `🕯️ Tháng ${lunarMonth} (AL): ${countThisMonth} Ngày Giỗ`;
+        }
+
+        // 2. Render Thanh 12 Nút Chọn Nhanh Tháng
+        function renderMonthPillsBar(monthCounts) {
+            const bar = document.getElementById('month-pills-bar');
+            if (!bar) return;
+
+            const curLunarMonth = todayLunar ? todayLunar.month : 1;
+
+            let pillsHtml = '';
+            for (let m = 1; m <= 12; m++) {
+                const isCurrent = (m === curLunarMonth);
+                const isSelected = (currentMemorialMode === 'single' && selectedMemorialMonth === m);
+                const count = monthCounts[m] || 0;
+
+                pillsHtml += `
+                    <button class="month-pill-btn ${isCurrent ? 'is-current-month' : ''} ${isSelected ? 'active' : ''}" 
+                            onclick="selectMemorialMonth(${m})" 
+                            title="${isCurrent ? 'Tháng Âm lịch hiện tại' : ''}">
+                        ${isCurrent ? '⭐ ' : ''}Tháng ${m}
+                        <span class="pill-count-badge">${count}</span>
+                    </button>
+                `;
+            }
+
+            if (monthCounts[0] > 0) {
+                pillsHtml += `
+                    <button class="month-pill-btn ${selectedMemorialMonth === 0 ? 'active' : ''}" onclick="selectMemorialMonth(0)">
+                        ❓ Chưa rõ ngày <span class="pill-count-badge">${monthCounts[0]}</span>
+                    </button>
+                `;
+            }
+
+            bar.innerHTML = pillsHtml;
+        }
+
+        // 3. CHẾ ĐỘ 1: LƯỚI 12 THÁNG TOÀN CẢNH (GRID VIEW)
+        function renderMemorial12MonthsGrid(container, deceasedList, monthCounts) {
+            const curLunarMonth = todayLunar ? todayLunar.month : 1;
+            const curLunarDay = todayLunar ? todayLunar.day : 1;
+
+            // Nhóm người mất theo tháng 1-12
+            const monthGroups = {};
+            for (let i = 0; i <= 12; i++) monthGroups[i] = [];
+
+            deceasedList.forEach(m => {
+                const mo = (m.parsedDod && m.parsedDod.month >= 1 && m.parsedDod.month <= 12) ? m.parsedDod.month : 0;
+                monthGroups[mo].push(m);
+            });
+
+            // Sắp xếp các cụ trong mỗi tháng theo ngày tăng dần
+            for (let i = 1; i <= 12; i++) {
+                monthGroups[i].sort((a,b) => {
+                    const da = a.parsedDod?.day || 99;
+                    const db = b.parsedDod?.day || 99;
+                    return da - db;
+                });
+            }
+
+            let cardsHtml = '';
+            for (let m = 1; m <= 12; m++) {
+                const isCurrent = (m === curLunarMonth);
+                const list = monthGroups[m];
+                const count = list.length;
+
+                cardsHtml += `
+                    <div class="month-card ${isCurrent ? 'current-month' : ''}" id="month-card-${m}">
+                        ${isCurrent ? `<div class="current-month-badge">⭐ THÁNG HIỆN TẠI (ÂL)</div>` : ''}
+                        <div class="month-card-header">
+                            <div class="month-title">
+                                <span>${isCurrent ? '🏮' : '📅'}</span>
+                                <span>${MONTH_NAMES[m]}</span>
+                            </div>
+                            <div class="month-count">${count} ngày giỗ</div>
+                        </div>
+                        <div class="month-card-body">
+                            ${count === 0 ? `
+                                <div class="month-empty">Tháng này không có ngày giỗ</div>
+                            ` : list.map(c => {
+                                const p = c.parsedDod;
+                                const isToday = p && p.isLunar && (p.month === curLunarMonth && p.day === curLunarDay);
+                                const isUpcoming = p && p.isLunar && (p.month === curLunarMonth && p.day > curLunarDay && (p.day - curLunarDay <= 7));
+                                const daysLeft = isUpcoming ? (p.day - curLunarDay) : 0;
+
+                                return `
+                                    <div class="gio-item ${isToday ? 'gio-item-today' : ''}" onclick="openViewModal('${c.id}')" title="Nhấp để xem chi tiết thông tin cụ">
+                                        <div class="gio-header">
+                                            <div class="gio-name">
+                                                ${c.gender === 'female' ? '👵' : '👴'} ${c.name}
+                                                <span style="font-size:0.75rem; color:#64748b; font-weight:normal;">(Đời ${c.gen})</span>
+                                            </div>
+                                            <div class="gio-date-badge">
+                                                ${isToday ? '🔥 HÔM NAY: ' : '🕯️ '}${c.dod}
+                                            </div>
+                                        </div>
+                                        <div class="gio-sub">
+                                            ${isUpcoming ? `<span style="color:#ea580c; font-weight:bold;">⏳ Sắp đến giỗ (còn ${daysLeft} ngày) • </span>` : ''}
+                                            <span>📍 Mộ phần: <b>${c.burial || 'Chưa cập nhật'}</b></span>
+                                            ${c.spouse ? `<span>• 💑 ${c.spouse}</span>` : ''}
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Phần dành cho các cụ chưa rõ ngày tháng
+            if (monthGroups[0].length > 0) {
+                cardsHtml += `
+                    <div class="month-card" style="border-left: 3px solid #64748b;">
+                        <div class="month-card-header" style="background:#f1f5f9;">
+                            <div class="month-title" style="color:#475569;">
+                                <span>❓</span>
+                                <span>Chưa Rõ Ngày Tháng Giỗ</span>
+                            </div>
+                            <div class="month-count">${monthGroups[0].length} cụ</div>
+                        </div>
+                        <div class="month-card-body">
+                            ${monthGroups[0].map(c => `
+                                <div class="gio-item" onclick="openViewModal('${c.id}')">
+                                    <div class="gio-header">
+                                        <div class="gio-name">${c.gender === 'female' ? '👵' : '👴'} ${c.name} (Đời ${c.gen})</div>
+                                        <div class="gio-date-badge" style="background:#e2e8f0; color:#475569; border-color:#cbd5e1;">${c.dod || 'Chưa rõ'}</div>
+                                    </div>
+                                    <div class="gio-sub">
+                                        <span>📍 ${c.burial || 'Chưa rõ nơi an táng'}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="memorial-grid-12">
+                    ${cardsHtml}
+                </div>
+            `;
+        }
+
+        // 4. CHẾ ĐỘ 2: XEM TỪNG THÁNG CHI TIẾT
+        function renderMemorialSingleMonth(container, deceasedList, monthNum) {
+            const list = deceasedList.filter(m => {
+                if (monthNum === 0) {
+                    return !m.parsedDod || m.parsedDod.month === 0;
+                }
+                return m.parsedDod && m.parsedDod.month === monthNum;
+            });
+
+            // Sắp xếp theo ngày
+            list.sort((a,b) => (a.parsedDod?.day || 99) - (b.parsedDod?.day || 99));
+
+            const isCurrent = (monthNum === (todayLunar ? todayLunar.month : -1));
+
+            container.innerHTML = `
+                <div class="single-month-header">
+                    <div>
+                        <h3>🌸 LỊCH GIỖ ${monthNum === 0 ? 'CHƯA RÕ THÁNG' : MONTH_NAMES[monthNum].toUpperCase()} (ÂM LỊCH)</h3>
+                        <p style="font-size: 0.82rem; opacity: 0.9; margin-top: 2px;">
+                            ${isCurrent ? '⭐ Đây là tháng Âm lịch hiện tại • ' : ''}Tổng cộng <b>${list.length}</b> ngày giỗ
+                        </p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="switchMemorialMode('grid12')" style="font-size: 0.8rem; padding: 6px 12px;">
+                        🗓️ Về Lưới 12 Tháng
+                    </button>
+                </div>
+
+                ${list.length === 0 ? `
+                    <div style="text-align: center; color: #64748b; padding: 40px; background: white; border-radius: 10px; border: 1px dashed #cbd5e1;">
+                        <p style="font-size: 1.1rem; margin-bottom: 6px;">🍃 Trong tháng này gia tộc không có ngày giỗ nào.</p>
+                        <button class="btn" onclick="selectMemorialMonth(${todayLunar ? todayLunar.month : 1})" style="margin-top: 10px;">
+                            Xem Tháng Hiện Tại (Tháng ${todayLunar ? todayLunar.month : 1})
+                        </button>
+                    </div>
+                ` : `
+                    <div class="member-cards-grid">
+                        ${list.map(m => `
+                            <div class="member-card" onclick="openViewModal('${m.id}')" style="border-left: 5px solid #b45309;">
+                                <img src="${m.img || DEFAULT_AVATAR}" class="card-avatar" alt="Avatar">
+                                <div class="card-body">
+                                    <div class="card-name">
+                                        <span>${m.gender === 'female' ? '👵' : '👴'} ${m.name}</span>
+                                        <span style="font-size:0.75rem; color:#64748b; font-weight:normal;">(Thế hệ ${m.gen})</span>
+                                    </div>
+                                    <div class="card-subtext">
+                                        <div style="color:#b91c1c; font-weight:bold; font-size:0.88rem; margin: 3px 0;">
+                                            🕯️ Ngày Giỗ: ${m.dod}
+                                        </div>
+                                        ${m.spouse ? `<div>💑 Vợ/Chồng: <b>${m.spouse}</b></div>` : ''}
+                                        ${m.burial ? `<div>📍 Nơi an táng: <b>${m.burial}</b></div>` : ''}
+                                        ${m.notes ? `<div style="font-style:italic; color:#64748b; margin-top:2px;">${m.notes}</div>` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `}
+            `;
+        }
+
+        // 5. CHẾ ĐỘ 3: DANH SÁCH ĐẦY ĐỦ (FULL LIST THEO TRÌNH TỰ NGÀY GIỖ)
+        function renderMemorialFullList(container, deceasedList) {
+            // Sắp xếp theo thứ tự tháng (1-12), sau đó theo ngày
+            deceasedList.sort((a,b) => {
+                const ma = (a.parsedDod && a.parsedDod.month >= 1) ? a.parsedDod.month : 99;
+                const mb = (b.parsedDod && b.parsedDod.month >= 1) ? b.parsedDod.month : 99;
+                if (ma !== mb) return ma - mb;
+                const da = a.parsedDod?.day || 99;
+                const db = b.parsedDod?.day || 99;
+                return da - db;
+            });
+
+            container.innerHTML = `
+                <div style="margin-bottom: 12px; font-weight: 600; color: #475569; font-size: 0.9rem;">
+                    📜 Danh sách toàn bộ ${deceasedList.length} ngày giỗ trong năm (Sắp xếp từ Tháng Giêng đến Tháng Chạp):
+                </div>
+                ${deceasedList.map(m => `
+                    <div class="memorial-card" onclick="openViewModal('${m.id}')" style="cursor: pointer;">
+                        <div class="memorial-info">
+                            <div style="font-weight:bold; font-size:1rem; color:var(--primary-color);">
+                                ${m.gender === 'female' ? '👵' : '👴'} ${m.name} 
+                                <span style="font-size:0.75rem; color:#64748b; font-weight:normal;">(Thế hệ ${m.gen})</span>
+                            </div>
+                            <div style="font-size:0.85rem; color:#475569;">
+                                ${m.spouse ? `💑 Vợ/Chồng: ${m.spouse} • ` : ''}
+                                📍 Nơi an táng: <b>${m.burial || 'Chưa cập nhật'}</b>
+                            </div>
+                            ${m.notes ? `<div style="font-size:0.78rem; color:#64748b; font-style:italic;">${m.notes}</div>` : ''}
+                        </div>
+                        <div class="memorial-date">
+                            🕯️ Ngày Giỗ: ${m.dod}
+                        </div>
+                    </div>
+                `).join('')}
+            `;
         }
 
         // ==================== MODAL XEM CHI TIẾT ====================
@@ -1454,11 +2535,13 @@
                 document.getElementById('view-children').innerText = 'Chưa ghi nhận con cái';
             }
 
+            const isAnyAdmin = (currentRole === 'ROOT_ADMIN' || currentRole === 'MODERATOR');
+
             const editBtn = document.getElementById('btn-edit-action');
-            editBtn.innerText = (currentRole === 'ADMIN') ? '✏️ Sửa Trực Tiếp' : '📝 Đề xuất sửa';
+            editBtn.innerText = isAnyAdmin ? '✏️ Sửa Trực Tiếp' : '📝 Đề xuất sửa';
 
             const delBtn = document.getElementById('btn-delete-member');
-            delBtn.style.display = (currentRole === 'ADMIN') ? 'inline-block' : 'none';
+            delBtn.style.display = (currentRole === 'ROOT_ADMIN') ? 'inline-block' : 'none';
 
             openModal('viewModal');
         }
@@ -1469,8 +2552,9 @@
             const m = familyMembers.find(x => String(x.id) === currentSelectedId);
             if (!m) return;
 
-            document.getElementById('edit-modal-title').innerText = (currentRole === 'ADMIN') ? '✏️ Chỉnh Sửa Thành Viên (Admin)' : '📝 Đề Xuất Sửa Thông Tin';
-            document.getElementById('edit-sender-box').style.display = (currentRole === 'ADMIN') ? 'none' : 'block';
+            const isAnyAdmin = (currentRole === 'ROOT_ADMIN' || currentRole === 'MODERATOR');
+            document.getElementById('edit-modal-title').innerText = isAnyAdmin ? '✏️ Chỉnh Sửa Thành Viên (Admin)' : '📝 Đề Xuất Sửa Thông Tin';
+            document.getElementById('edit-sender-box').style.display = isAnyAdmin ? 'none' : 'block';
 
             document.getElementById('edit-id').value = m.id;
             document.getElementById('edit-name').value = m.name;
@@ -1511,8 +2595,10 @@
 
             const safeKey = String(id).replace('.', '_');
 
-            if (currentRole === 'ADMIN') {
-                // Admin lưu trực tiếp
+            const isAnyAdmin = (currentRole === 'ROOT_ADMIN' || currentRole === 'MODERATOR');
+
+            if (isAnyAdmin) {
+                // Admin / Moderator lưu trực tiếp
                 db.ref('members/' + safeKey).update(updatedData, (err) => {
                     if (!err) {
                         alert('✅ Đã cập nhật thành công lên Firebase!');
@@ -1612,7 +2698,9 @@
                 notes: document.getElementById('add-notes').value.trim()
             };
 
-            if (currentRole === 'ADMIN') {
+            const isAnyAdmin = (currentRole === 'ROOT_ADMIN' || currentRole === 'MODERATOR');
+
+            if (isAnyAdmin) {
                 db.ref('members/' + newId).set(newMemberData, (err) => {
                     if (!err) {
                         alert('✅ Đã thêm thành viên mới vào gia phả!');
@@ -1805,8 +2893,9 @@
 
         // ==================== XÁC THỰC ADMIN ====================
         function handleAuthClick() {
-            if (currentRole === 'ADMIN') {
-                if (confirm('Bạn muốn đăng xuất khỏi quyền Quản Trị Viên?')) {
+            const isAnyAdmin = (currentRole === 'ROOT_ADMIN' || currentRole === 'MODERATOR');
+            if (isAnyAdmin) {
+                if (confirm('Bạn muốn đăng xuất khỏi quyền Quản Trị Viên / Người Duyệt?')) {
                     auth.signOut().then(() => {
                         alert('Đã đăng xuất.');
                     });
@@ -1827,12 +2916,327 @@
             auth.signInWithEmailAndPassword(email, password)
                 .then(() => {
                     closeModal('authModal');
-                    alert('🎉 Đăng nhập Admin thành công!');
+                    alert('🎉 Đăng nhập thành công! Chào mừng bạn tham gia quản trị gia phả.');
                 })
                 .catch((error) => {
                     errBox.style.display = 'block';
-                    errBox.innerText = 'Lỗi đăng nhập: Sai mật khẩu hoặc tài khoản chưa được tạo trong Firebase Auth.';
+                    errBox.innerText = 'Lỗi đăng nhập: Sai mật khẩu hoặc tài khoản chưa được cấp quyền trong Firebase Auth.';
                 });
+        }
+
+        // ==================== QUẢN LÝ PHÂN QUYỀN BAN QUẢN TRỊ ====================
+        function openAdminsModal() {
+            renderAdminsList();
+            openModal('adminsModal');
+        }
+
+        function renderAdminsList() {
+            const container = document.getElementById('admins-list-container');
+            if (!container) return;
+
+            const admins = Object.entries(adminList);
+            if (admins.length === 0) {
+                container.innerHTML = `<p style="color:#64748b; font-size:0.85rem;">Chưa có thành viên nào.</p>`;
+                return;
+            }
+
+            container.innerHTML = admins.map(([key, a]) => {
+                const isRoot = (a.role === 'ROOT_ADMIN' || a.email?.toLowerCase() === ROOT_ADMIN_EMAIL.toLowerCase());
+                return `
+                    <div class="admin-user-card">
+                        <div class="admin-user-info">
+                            <div style="font-weight: bold; font-size: 0.92rem; color: #1e293b; display: flex; align-items: center; gap: 6px;">
+                                <span>${isRoot ? '👑' : '🛡️'} ${a.name || a.email}</span>
+                                <span class="role-badge ${isRoot ? 'role-root-admin' : 'role-moderator'}" style="font-size: 0.68rem; padding: 2px 7px;">
+                                    ${isRoot ? 'Trưởng Ban' : (a.role === 'CO_ADMIN' ? 'Phó Ban' : 'Người Duyệt')}
+                                </span>
+                            </div>
+                            <div style="font-size: 0.8rem; color: #475569;">
+                                ✉️ Email: <b>${a.email}</b> ${a.phone ? `• 📞 SĐT: <b>${a.phone}</b>` : ''}
+                            </div>
+                            <div style="font-size: 0.72rem; color: #94a3b8;">
+                                Ngày cấp quyền: ${a.addedAt || 'Trước đó'}
+                            </div>
+                        </div>
+                        <div>
+                            ${!isRoot && currentRole === 'ROOT_ADMIN' ? `
+                                <button class="btn btn-danger" style="font-size: 0.75rem; padding: 4px 8px;" onclick="revokeAdmin('${key}', '${a.name || a.email}')">
+                                    🗑️ Thu hồi
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function submitNewAdmin() {
+            const name = document.getElementById('new-admin-name').value.trim();
+            const email = document.getElementById('new-admin-email').value.trim().toLowerCase();
+            const phone = document.getElementById('new-admin-phone').value.trim();
+            const password = document.getElementById('new-admin-password').value;
+            const role = document.getElementById('new-admin-role').value;
+
+            if (!name || !email || !password) {
+                alert('Vui lòng điền đầy đủ Tên, Email và Mật khẩu!');
+                return;
+            }
+
+            if (password.length < 6) {
+                alert('Mật khẩu phải có tối thiểu 6 ký tự!');
+                return;
+            }
+
+            const safeKey = email.replace(/\./g, '_');
+
+            // Tạo tài khoản qua Secondary App Instance của Firebase để không làm đăng xuất Trưởng ban
+            try {
+                const tempAppName = 'CreatorApp_' + Date.now();
+                const tempApp = firebase.initializeApp(firebaseConfig, tempAppName);
+                const tempAuth = tempApp.auth();
+
+                tempAuth.createUserWithEmailAndPassword(email, password)
+                    .then(() => {
+                        tempAuth.signOut();
+                        tempApp.delete();
+                        saveAdminToDatabase(safeKey, name, email, phone, role);
+                    })
+                    .catch((err) => {
+                        tempApp.delete();
+                        if (err.code === 'auth/email-already-in-use') {
+                            // Tài khoản đã có trong Firebase Auth, cấp quyền trong DB
+                            saveAdminToDatabase(safeKey, name, email, phone, role);
+                        } else {
+                            console.warn("Client user creation note:", err);
+                            saveAdminToDatabase(safeKey, name, email, phone, role, true);
+                        }
+                    });
+            } catch (e) {
+                saveAdminToDatabase(safeKey, name, email, phone, role, true);
+            }
+        }
+
+        function saveAdminToDatabase(safeKey, name, email, phone, role, needConsoleNotice = false) {
+            const adminObj = {
+                name: name,
+                email: email,
+                phone: phone,
+                role: role,
+                addedAt: new Date().toLocaleString('vi-VN'),
+                addedBy: currentUser ? currentUser.email : 'ROOT_ADMIN'
+            };
+
+            db.ref('admins/' + safeKey).set(adminObj, (err) => {
+                if (!err) {
+                    document.getElementById('addAdminForm').reset();
+                    let msg = `🎉 ĐÃ PHÂN QUYỀN THÀNH CÔNG CHO ${name} (${email})!\n\n`;
+                    msg += `👉 Hãy gửi thông tin cho người này:\n`;
+                    msg += `- Đường link trang web\n`;
+                    msg += `- Email: ${email}\n`;
+                    msg += `- Mật khẩu bạn vừa đặt\n\n`;
+                    msg += `Người này chỉ cần bấm nút [Admin] trên web để đăng nhập và duyệt thông tin con cháu gửi về.`;
+                    if (needConsoleNotice) {
+                        msg += `\n\n(Lưu ý: Nếu người đó chưa đăng nhập được do chính sách bảo mật Firebase, Trưởng ban chỉ cần vào Firebase Console -> Authentication -> Users -> Add User với email + pass này là xong ngay!)`;
+                    }
+                    alert(msg);
+                } else {
+                    alert('Lỗi khi lưu phân quyền: ' + err.message);
+                }
+            });
+        }
+
+        function revokeAdmin(safeKey, name) {
+            if (!confirm(`Bạn có chắc chắn muốn thu hồi quyền duyệt của [${name}] không?`)) return;
+            db.ref('admins/' + safeKey).remove((err) => {
+                if (!err) {
+                    alert(`Đã thu hồi quyền của ${name}.`);
+                } else {
+                    alert('Lỗi: ' + err.message);
+                }
+            });
+        }
+
+        // ==================== NHẬP DỮ LIỆU HÀNG LOẠT (BULK IMPORT) ====================
+        let parsedBulkMembers = [];
+
+        function openBulkImportModal() {
+            parsedBulkMembers = [];
+            document.getElementById('bulkImportPreview').innerHTML = '';
+            document.getElementById('btn-save-bulk').style.display = 'none';
+            openModal('importModal');
+        }
+
+        function downloadExcelTemplate() {
+            const csvContent = "\uFEFF" + 
+                "Họ và Tên,Thế hệ,Tên Cha/Mẹ trực hệ,Giới tính (Nam/Nữ),Ngày sinh,Ngày mất (ghi AL nếu Âm lịch),Vợ/Chồng,Nơi an táng,Ghi chú\n" +
+                "Nguyễn Văn An,5,Nguyễn Văn Kế,Nam,15/04/1960,,Trần Thị Mai,Hà Nam,Chi trưởng\n" +
+                "Nguyễn Thị Bình,5,Nguyễn Văn Kế,Nữ,10/08/1965,15/8 (AL),Lê Văn C,Ninh Bình,Bà cô tổ\n" +
+                "Nguyễn Văn Dũng,6,Nguyễn Văn An,Nam,01/01/1990,,Phạm Thị H,Hà Nội,Cháu đích tôn\n";
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "Bieu_Mau_Nhap_Gia_Pha_Ho_Nguyen.csv";
+            link.click();
+        }
+
+        function fillSampleImportData() {
+            const sample = 
+`Nguyễn Văn Minh	5	Nguyễn Văn Kế	Nam	15/04/1962		Trần Thị Bích	Hà Nam	Chi 2
+Nguyễn Thị Lan	5	Nguyễn Văn Kế	Nữ	20/09/1966	14/5 (AL)	Vũ Văn Hùng	Ninh Bình	Bà cô
+Nguyễn Văn Hoàng	6	Nguyễn Văn Minh	Nam	05/11/1992		Đỗ Thị Thu	Hà Nội	Con trai cả
+Nguyễn Thị Ngọc	6	Nguyễn Văn Minh	Nữ	12/03/1996			Đà Nẵng	Con gái thứ`;
+            document.getElementById('bulkImportInput').value = sample;
+            parseBulkInputData();
+        }
+
+        function parseBulkInputData() {
+            const text = document.getElementById('bulkImportInput').value.trim();
+            const previewContainer = document.getElementById('bulkImportPreview');
+            const saveBtn = document.getElementById('btn-save-bulk');
+
+            if (!text) {
+                alert('Vui lòng dán dữ liệu từ bảng tính Excel vào khung!');
+                return;
+            }
+
+            const lines = text.split(/\r?\n/);
+            parsedBulkMembers = [];
+
+            lines.forEach((line, idx) => {
+                const raw = line.trim();
+                if (!raw) return;
+
+                // Bỏ qua dòng tiêu đề nếu có
+                if (idx === 0 && (raw.toLowerCase().includes('họ và tên') || raw.toLowerCase().includes('thế hệ'))) return;
+
+                // Phân tách bằng Tab hoặc dấu phẩy hoặc dấu chấm phẩy
+                let cols = raw.split('\t');
+                if (cols.length < 3) {
+                    cols = raw.split(',');
+                }
+                if (cols.length < 3) {
+                    cols = raw.split(';');
+                }
+
+                const name = (cols[0] || '').trim();
+                if (!name) return;
+
+                const gen = parseInt((cols[1] || '').trim()) || 1;
+                const parentName = (cols[2] || '').trim();
+                const genderRaw = (cols[3] || '').toLowerCase().trim();
+                const gender = (genderRaw.includes('nữ') || genderRaw.includes('female') || genderRaw.includes('bà') || genderRaw.includes('cô')) ? 'female' : 'male';
+                const dob = (cols[4] || '').trim();
+                const dod = (cols[5] || '').trim();
+                const spouse = (cols[6] || '').trim();
+                const burial = (cols[7] || '').trim();
+                const notes = (cols[8] || '').trim();
+
+                // Tìm cha/mẹ trong danh sách hiện tại
+                let fid = null;
+                if (parentName) {
+                    const foundParent = familyMembers.find(m => m.name.toLowerCase() === parentName.toLowerCase() || m.name.toLowerCase().includes(parentName.toLowerCase()));
+                    if (foundParent) {
+                        fid = foundParent.id;
+                    }
+                }
+
+                const newId = 'MEM_' + Date.now() + '_' + Math.floor(Math.random()*1000);
+
+                parsedBulkMembers.push({
+                    id: newId,
+                    name: name,
+                    gen: gen,
+                    parentName: parentName,
+                    fid: fid,
+                    gender: gender,
+                    dob: dob,
+                    dod: dod,
+                    spouse: spouse,
+                    burial: burial,
+                    notes: notes,
+                    img: DEFAULT_AVATAR
+                });
+            });
+
+            if (parsedBulkMembers.length === 0) {
+                previewContainer.innerHTML = `<p style="color:#b91c1c; padding:10px;">Không nhận diện được dòng dữ liệu hợp lệ nào. Hãy kiểm tra lại thứ tự các cột!</p>`;
+                saveBtn.style.display = 'none';
+                return;
+            }
+
+            saveBtn.style.display = 'inline-flex';
+            previewContainer.innerHTML = `
+                <div style="margin-top:10px;">
+                    <div style="font-weight:bold; color:#16a34a; margin-bottom:6px;">
+                        ✅ Đã nhận diện được ${parsedBulkMembers.length} thành viên sẵn sàng nạp:
+                    </div>
+                    <div class="preview-table-wrap">
+                        <table class="preview-table">
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Họ và Tên</th>
+                                    <th>Thế hệ</th>
+                                    <th>Cha/Mẹ</th>
+                                    <th>Giới tính</th>
+                                    <th>Ngày sinh</th>
+                                    <th>Ngày mất</th>
+                                    <th>Vợ/Chồng</th>
+                                    <th>An táng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${parsedBulkMembers.map((m, i) => `
+                                    <tr>
+                                        <td>${i + 1}</td>
+                                        <td><b>${m.name}</b></td>
+                                        <td>Đời ${m.gen}</td>
+                                        <td>${m.parentName ? (m.fid ? `🔗 ${m.parentName}` : `⚠️ ${m.parentName} (Chưa khớp ID)`) : '—'}</td>
+                                        <td>${m.gender === 'female' ? 'Nữ' : 'Nam'}</td>
+                                        <td>${m.dob || '—'}</td>
+                                        <td>${m.dod ? `<span style="color:#b91c1c; font-weight:bold;">${m.dod}</span>` : '—'}</td>
+                                        <td>${m.spouse || '—'}</td>
+                                        <td>${m.burial || '—'}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function executeBulkSave() {
+            if (!parsedBulkMembers || parsedBulkMembers.length === 0) return;
+            if (!confirm(`XÁC NHẬN: Bạn muốn nạp đồng loạt ${parsedBulkMembers.length} thành viên này vào Cây Gia Phả?`)) return;
+
+            const updates = {};
+            parsedBulkMembers.forEach(m => {
+                const itemToSave = {
+                    id: m.id,
+                    name: m.name,
+                    gen: m.gen,
+                    gender: m.gender,
+                    fid: m.fid || null,
+                    dob: m.dob || '',
+                    dod: m.dod || '',
+                    spouse: m.spouse || '',
+                    burial: m.burial || '',
+                    notes: m.notes || '',
+                    img: m.img || DEFAULT_AVATAR
+                };
+                updates['members/' + m.id] = itemToSave;
+            });
+
+            db.ref().update(updates, (err) => {
+                if (!err) {
+                    alert(`🎉 Thành công! Đã nạp ${parsedBulkMembers.length} thành viên mới vào gia phả!`);
+                    closeModal('importModal');
+                } else {
+                    alert('Lỗi khi nạp hàng loạt: ' + err.message);
+                }
+            });
         }
 
         // ==================== SAO LƯU DỮ LIỆU ====================
